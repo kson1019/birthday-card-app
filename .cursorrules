@@ -1,0 +1,213 @@
+# Birthday Card App — Cursor Rules
+
+## Project Overview
+
+Digital birthday invitation platform for kids' parties. No authentication required — recipients are identified by UUID tokens in URLs.
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router) + TypeScript
+- **Styling**: Tailwind CSS v4
+- **Database**: SQLite via better-sqlite3 + Drizzle ORM
+- **Email**: Resend + React Email
+- **Animations**: CSS 3D transforms + canvas-confetti
+
+## Architecture Patterns
+
+### Server vs Client Components
+
+Default to React Server Components. Only use `"use client"` when the component needs:
+- Event handlers (onClick, onChange, etc.)
+- useState, useEffect, or other hooks
+- Browser-only APIs (canvas, localStorage, etc.)
+
+Current client components:
+- `FlipCard.tsx` — click to flip
+- `Confetti.tsx` — canvas animation
+- `CardCreatorForm.tsx` — form state
+- `RsvpForm.tsx` — form submission
+
+### Code Organization
+
+```
+src/
+├── app/           # Next.js pages and API routes
+├── components/    # React components by feature
+│   ├── card/      # Card display components
+│   ├── forms/     # Form components
+│   └── dashboard/ # Dashboard components
+├── lib/           # Utilities and services
+│   ├── db/        # Database connection + schema
+│   ├── email/     # Resend client + templates
+│   ├── utils.ts   # Client-safe utilities
+│   └── server-utils.ts  # Server-only utilities
+└── types/         # TypeScript type definitions
+```
+
+### Client/Server Code Separation
+
+- `src/lib/utils.ts` — Client-safe (no Node.js imports). Used in client components.
+- `src/lib/server-utils.ts` — Server-only (imports `crypto`, etc.). Used only in API routes.
+
+Never import server-only code into client components.
+
+## Database Conventions
+
+### Drizzle ORM with SQLite
+
+The sync driver returns query builder objects, not arrays. Always call `.all()`:
+
+```typescript
+// WRONG
+const [row] = db.insert(table).values(data).returning();
+
+// CORRECT
+const rows = db.insert(table).values(data).returning().all();
+const row = rows[0];
+```
+
+### Schema Location
+
+All tables defined in `src/lib/db/schema.ts`. Run migrations with:
+```bash
+npx drizzle-kit generate
+npx drizzle-kit migrate
+```
+
+### Naming Conventions
+
+- Table names: lowercase plural (`cards`, `recipients`)
+- Column names: snake_case in DB (`image_path`, `card_id`)
+- TypeScript properties: camelCase (`imagePath`, `cardId`)
+- Drizzle handles the mapping automatically
+
+## API Route Conventions
+
+### File Structure
+
+- `src/app/api/[resource]/route.ts` — Collection endpoints (GET list, POST create)
+- `src/app/api/[resource]/[id]/route.ts` — Item endpoints (GET one, PUT, DELETE)
+
+### Response Format
+
+Always return JSON with consistent structure:
+
+```typescript
+// Success
+return Response.json({ data: result });
+return Response.json({ data: results });
+
+// Error
+return Response.json({ error: "Message" }, { status: 400 });
+```
+
+### Token-Based Identification
+
+Recipients are identified by UUID tokens, not IDs. Token is passed as query param:
+```
+/card/[id]?token=[uuid]
+```
+
+## Styling Guidelines
+
+### Tailwind CSS v4
+
+- Use Tailwind utility classes
+- Custom animations defined in `globals.css`
+- For 3D transforms, use inline styles (Tailwind v4 doesn't support `transform-style: preserve-3d`)
+
+### Animation Patterns
+
+```css
+/* Float animation example */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+```
+
+Always include `prefers-reduced-motion` support:
+```css
+@media (prefers-reduced-motion: reduce) {
+  .animated { animation: none; }
+}
+```
+
+## Email Templates
+
+### React Email Components
+
+Templates in `src/lib/email/templates/`. Requirements:
+- Use `@react-email/components` only
+- All styles must be inline (email clients don't support CSS files)
+- Images require absolute URLs: prepend `NEXT_PUBLIC_BASE_URL`
+
+```tsx
+<Img src={`${baseUrl}${card.imagePath}`} />
+```
+
+## File Upload
+
+### Image Handling
+
+- Supported formats: JPEG, PNG, WebP, GIF
+- Max size: 5MB
+- Storage: `public/uploads/`
+- Return relative path: `/uploads/filename.jpg`
+
+## TypeScript
+
+### Type Definitions
+
+All shared types in `src/types/index.ts`:
+- `Card` — Card data
+- `Recipient` — Recipient with RSVP status
+- `RsvpStatus` — `"pending" | "accepted" | "declined"`
+
+### Strict Mode
+
+TypeScript strict mode is enabled. Always:
+- Define explicit return types for functions
+- Handle null/undefined cases
+- Use proper type guards
+
+## Environment Variables
+
+Required in `.env.local`:
+```
+RESEND_API_KEY=re_...
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+
+Access server-only vars with `process.env.VAR_NAME`.
+Access client vars with `process.env.NEXT_PUBLIC_VAR_NAME`.
+
+## Common Tasks
+
+### Adding a New API Route
+
+1. Create `src/app/api/[name]/route.ts`
+2. Export async functions: `GET`, `POST`, `PUT`, `DELETE`
+3. Use `NextRequest` for request, return `Response.json()`
+
+### Adding a New Component
+
+1. Decide: server or client component?
+2. Create in appropriate `src/components/[feature]/` folder
+3. If client, add `"use client"` directive at top
+4. Export as named export
+
+### Adding a Database Table
+
+1. Define table in `src/lib/db/schema.ts`
+2. Run `npx drizzle-kit generate`
+3. Run `npx drizzle-kit migrate`
+4. Add TypeScript type to `src/types/index.ts`
+
+## Do NOT
+
+- Add authentication (project is intentionally auth-free)
+- Use external CSS files in email templates
+- Import server utilities into client components
+- Forget `.all()` when using Drizzle insert/update with `.returning()`
+- Store absolute paths in database (store relative paths like `/uploads/...`)

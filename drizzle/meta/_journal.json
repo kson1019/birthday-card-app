@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1772072273796,
+      "tag": "0000_purple_exodus",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1772367000000,
+      "tag": "0001_hosted_by",
+      "breakpoints": true
+    }
+  ]
+}

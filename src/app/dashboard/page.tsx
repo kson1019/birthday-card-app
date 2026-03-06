@@ -1,7 +1,7 @@
-import CardCreatorForm from "@/components/forms/CardCreatorForm";
 import Link from "next/link";
+import CardList from "@/components/dashboard/CardList";
 
-export default function Home() {
+export default function DashboardPage() {
   return (
     <main className="min-h-screen">
       <header className="bg-white shadow-sm">
@@ -10,25 +10,21 @@ export default function Home() {
             &#127874; Birthday Cards
           </h1>
           <Link
-            href="/dashboard"
+            href="/"
             className="text-sm text-purple-600 hover:text-purple-800 font-medium"
           >
-            Dashboard &rarr;
+            &larr; Create New
           </Link>
         </div>
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
-            Create a Birthday Card
-          </h2>
-          <p className="text-gray-500">
-            Design a beautiful animated card and send it to your guests
-          </p>
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h2>
+          <p className="text-gray-500">Track your invitations and RSVPs</p>
         </div>
 
-        <CardCreatorForm />
+        <CardList />
       </div>
     </main>
   );
