@@ -3,7 +3,6 @@ import { cards, recipients } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Confetti from "@/components/card/Confetti";
-import CalendarButton from "@/components/card/CalendarButton";
 import RsvpForm from "@/components/forms/RsvpForm";
 import { formatDateTime, getMapSearchUrl } from "@/lib/utils";
 
@@ -93,23 +92,19 @@ export default async function CardPage({ params, searchParams }: PageProps) {
                 <p className="text-center italic text-gray-600">{card.message}</p>
               </div>
             )}
-
-            {token && (
-              <div className="pt-4 border-t border-gray-200 flex justify-center">
-                <CalendarButton
-                  title={card.title}
-                  location={card.location}
-                  datetime={card.datetime}
-                  description={card.message}
-                />
-              </div>
-            )}
           </div>
         </div>
 
         {token && (
           <div className="mt-8">
-            <RsvpForm token={token} currentResponse={currentRecipient} />
+            <RsvpForm
+              token={token}
+              currentResponse={currentRecipient}
+              eventTitle={card.title}
+              eventLocation={card.location}
+              eventDatetime={card.datetime}
+              eventDescription={card.message}
+            />
           </div>
         )}
       </div>

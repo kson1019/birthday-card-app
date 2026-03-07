@@ -67,3 +67,50 @@ export function generateIcsFile({
 
   return icsContent;
 }
+
+export function generateGoogleCalendarUrl({
+  title,
+  location,
+  datetime,
+  description = "",
+  durationHours = 3,
+}: IcsEventParams): string {
+  const startDate = new Date(datetime);
+  const endDate = new Date(startDate.getTime() + durationHours * 60 * 60 * 1000);
+
+  const format = (d: Date) =>
+    d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${format(startDate)}/${format(endDate)}`,
+    details: description,
+    location,
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+export function generateOutlookWebUrl({
+  title,
+  location,
+  datetime,
+  description = "",
+  durationHours = 3,
+}: IcsEventParams): string {
+  const startDate = new Date(datetime);
+  const endDate = new Date(startDate.getTime() + durationHours * 60 * 60 * 1000);
+
+  const params = new URLSearchParams({
+    subject: title,
+    startdt: startDate.toISOString(),
+    enddt: endDate.toISOString(),
+    location,
+    body: description,
+    path: "/calendar/action/compose",
+    rru: "addevent",
+  });
+
+  return `https://outlook.live.com/calendar/0/deeplink/compose?${params.toString()}`;
+}

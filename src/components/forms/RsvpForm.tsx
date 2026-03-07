@@ -3,13 +3,25 @@
 import { useState } from "react";
 import type { Recipient } from "@/types";
 import { getRandomRsvpMessage } from "@/lib/constants";
+import CalendarButton from "@/components/card/CalendarButton";
 
 interface RsvpFormProps {
   token: string;
   currentResponse?: Recipient | null;
+  eventTitle?: string;
+  eventLocation?: string;
+  eventDatetime?: string;
+  eventDescription?: string;
 }
 
-export default function RsvpForm({ token, currentResponse }: RsvpFormProps) {
+export default function RsvpForm({
+  token,
+  currentResponse,
+  eventTitle,
+  eventLocation,
+  eventDatetime,
+  eventDescription,
+}: RsvpFormProps) {
   const [status, setStatus] = useState<"accepted" | "declined" | null>(
     currentResponse?.status === "pending" ? null : currentResponse?.status ?? null
   );
@@ -46,6 +58,9 @@ export default function RsvpForm({ token, currentResponse }: RsvpFormProps) {
   };
 
   if (isSubmitted && !showChangeForm) {
+    const showCalendar =
+      status === "accepted" && eventTitle && eventLocation && eventDatetime;
+
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 text-center animate-fade-in">
         <div className="text-5xl mb-4 animate-bounce">
@@ -58,6 +73,17 @@ export default function RsvpForm({ token, currentResponse }: RsvpFormProps) {
         </h3>
         {message && (
           <p className="text-gray-500 italic mb-4">&ldquo;{message}&rdquo;</p>
+        )}
+        {showCalendar && (
+          <div className="mb-5 flex flex-col items-center gap-2">
+            <p className="text-sm text-gray-500">Add it to your calendar so you don&apos;t forget!</p>
+            <CalendarButton
+              title={eventTitle!}
+              location={eventLocation!}
+              datetime={eventDatetime!}
+              description={eventDescription}
+            />
+          </div>
         )}
         <button
           onClick={() => setShowChangeForm(true)}
