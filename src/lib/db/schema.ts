@@ -10,6 +10,9 @@ export const cards = sqliteTable("cards", {
   location: text("location").notNull(),
   datetime: text("datetime").notNull(),
   message: text("message").notNull(),
+  theme: text("theme").notNull().default("default"),
+  enableEmojis: integer("enable_emojis").notNull().default(1),
+  enableSound: integer("enable_sound").notNull().default(1),
   createdAt: text("created_at")
     .notNull()
     .default(sql`(datetime('now'))`),

@@ -1,8 +1,8 @@
 # Birthday Card App — Progress Log
 
-## Status: Complete ✅
+## Status: Phase 2 Complete ✅
 
-App is fully built and running on `http://localhost:3000`.
+App is fully built and running on `http://localhost:3000`. Phases 1 and 2 are complete.
 
 ---
 
@@ -13,7 +13,8 @@ App is fully built and running on `http://localhost:3000`.
 - **Styling**: Tailwind CSS v4
 - **Database**: SQLite via `better-sqlite3` + Drizzle ORM
 - **Email**: Resend (`@react-email/components` for templates)
-- **Animations**: CSS 3D transforms (flip card) + `canvas-confetti`
+- **Animations**: CSS 3D transforms (flip card) + `canvas-confetti` + CSS `float-up` keyframes (floating emojis)
+- **Sound**: Web Audio API (synthesized pop, chime, decline sounds)
 - **Auth**: None (single-user, token-based recipient identification)
 
 ---
@@ -22,8 +23,8 @@ App is fully built and running on `http://localhost:3000`.
 
 | Route | Description |
 |---|---|
-| `/` | Card creator form — upload image, fill details, preview, send |
-| `/card/[id]?token=[token]` | Recipient-facing card with flip animation, confetti, and RSVP form |
+| `/` | Card creator form — upload image, fill details, toggle emojis/sounds, preview, send |
+| `/card/[id]?token=[token]` | Recipient-facing card with flip animation, confetti, floating emojis, and RSVP form |
 | `/dashboard` | Creator dashboard — lists all cards with RSVP stats and expandable recipient details |
 
 ---
@@ -33,7 +34,7 @@ App is fully built and running on `http://localhost:3000`.
 | Method | Route | Description |
 |---|---|---|
 | `POST` | `/api/upload` | Upload image (JPEG/PNG/WebP/GIF, max 5MB) → saved to `public/uploads/` |
-| `POST` | `/api/cards` | Create card + recipients (transactional), returns card with tokens |
+| `POST` | `/api/cards` | Create card + recipients (transactional), includes emoji/sound toggles |
 | `GET` | `/api/cards` | List all cards with aggregated RSVP counts |
 | `GET` | `/api/cards/[id]` | Get single card with all recipients + current recipient by token |
 | `POST` | `/api/rsvp` | Submit or update RSVP response by token |
@@ -48,7 +49,7 @@ src/
 ├── app/
 │   ├── layout.tsx                      # Root layout, metadata
 │   ├── page.tsx                        # Home / card creator
-│   ├── globals.css                     # Tailwind + float animation keyframes
+│   ├── globals.css                     # Tailwind + float-up/fade-in animation keyframes
 │   ├── dashboard/page.tsx              # Dashboard page
 │   ├── card/[id]/page.tsx              # Card display + RSVP page
 │   └── api/
@@ -62,12 +63,14 @@ src/
 │   │   ├── FlipCard.tsx                # 3D CSS flip container (click to flip)
 │   │   ├── CardFront.tsx               # Front face: image + headline + sparkles
 │   │   ├── CardBack.tsx                # Back face: title, location, datetime, message
-│   │   └── Confetti.tsx                # canvas-confetti burst on card load
+│   │   ├── Confetti.tsx                # canvas-confetti burst on card load
+│   │   ├── FloatingElements.tsx        # Animated floating emojis (all themes mixed)
+│   │   └── CalendarButton.tsx          # Calendar dropdown (Google, Apple, Outlook)
 │   ├── forms/
-│   │   ├── CardCreatorForm.tsx         # Full card creation form with preview toggle
+│   │   ├── CardCreatorForm.tsx         # Full card creation form with emoji/sound toggles
 │   │   ├── ImageUploader.tsx           # Drag-and-drop image upload with preview
 │   │   ├── RecipientInput.tsx          # Tag-style multi-email input
-│   │   └── RsvpForm.tsx                # Yes/No RSVP form with optional message
+│   │   └── RsvpForm.tsx                # Yes/No RSVP form with random messages + calendar
 │   └── dashboard/
 │       ├── CardList.tsx                # Fetches + renders grid of cards
 │       ├── CardSummaryCard.tsx         # Card thumbnail + stats + expand button
@@ -80,7 +83,10 @@ src/
 │   │   ├── resend.ts                   # Resend client singleton
 │   │   └── templates/
 │   │       └── InvitationEmail.tsx     # React Email template with inline styles
-│   ├── utils.ts                        # Client-safe utils: formatDateTime
+│   ├── constants.ts                    # RSVP messages (accepted/declined arrays)
+│   ├── sounds.ts                       # Web Audio API sound effects (pop, chime, etc.)
+│   ├── themes.ts                       # Floating element theme definitions
+│   ├── utils.ts                        # Client-safe utils: formatDateTime, calendar helpers
 │   └── server-utils.ts                 # Server-only utils: generateToken, getBaseUrl
 └── types/
     ├── index.ts                        # Shared TS types: Card, Recipient, etc.
@@ -98,9 +104,13 @@ src/
 | `image_path` | TEXT | Relative path, e.g. `/uploads/abc.jpg` |
 | `headline` | TEXT | Front of card text |
 | `title` | TEXT | Party title (back of card) |
+| `hosted_by` | TEXT | Host name (optional) |
 | `location` | TEXT | Party location |
 | `datetime` | TEXT | ISO 8601 string |
 | `message` | TEXT | Brief message |
+| `theme` | TEXT | Card theme (default: "default") |
+| `enable_emojis` | INTEGER | 1 = show floating emojis, 0 = hide |
+| `enable_sound` | INTEGER | 1 = enable sound effects, 0 = mute |
 | `created_at` | TEXT | Auto-set to `datetime('now')` |
 
 ### `recipients`
@@ -119,6 +129,22 @@ Migration files in `drizzle/` directory. Run `npx drizzle-kit migrate` to apply.
 
 ---
 
+## Completed Features
+
+### Phase 1: RSVP Enhancements ✅
+- **Random RSVP messages**: 10+ fun messages randomly displayed on Yes/No response (bounce + fade-in animations)
+- **Add to Calendar**: Dropdown with Google Calendar, Apple Calendar, Outlook (.ics), and Outlook.com options. Shows only after accepting RSVP.
+- **Calendar helpers**: `generateIcsFile()`, `generateGoogleCalendarUrl()`, `generateOutlookWebUrl()` in `utils.ts`
+
+### Phase 2: Floating Animations & Sound ✅
+- **Floating emojis**: 20 randomly positioned elements from all themes (balloons, stars, hearts, confetti, unicorns) — sized 2.4–4.0rem, full-page float-up animation
+- **CSS animations**: `float-up` keyframes with randomized delay, duration, drift, and spin. `prefers-reduced-motion` support.
+- **Sound effects**: Web Audio API synthesized sounds — pop on button click, ascending chime on accept, descending tone on decline, flip sound on card flip
+- **Per-card toggles**: "Floating Emojis" and "Sound Effects" toggles in card creation form, stored in DB
+- **Conditional rendering**: FloatingElements and Confetti render based on per-card settings
+
+---
+
 ## Key Technical Notes
 
 ### Flip Card Animation
@@ -128,6 +154,18 @@ Pure CSS 3D using inline styles (required for `transform-style: preserve-3d` whi
 - Both faces: `backface-visibility: hidden`
 - Back face: pre-rotated with `transform: rotateY(180deg)`
 - Triggered by click/tap (works on mobile)
+
+### Floating Elements
+- Fixed position container with `pointer-events: none` and `z-[1]`
+- Elements start at `top: 100%` and animate via `translateY(calc(-100vh - 80px))`
+- CSS custom properties for per-element drift and spin randomization
+- `prefers-reduced-motion` hides elements entirely
+
+### Sound Effects (Web Audio API)
+- All sounds synthesized programmatically — no audio files
+- `ensureAudioContext()` resumes AudioContext on user interaction (browser autoplay policy)
+- Button clicks serve as user gestures, enabling subsequent sounds
+- Auto-play sound on page load was removed because browsers block it
 
 ### Drizzle ORM (SQLite sync driver) — Important Quirk
 `.returning()` returns a query builder object, NOT an array. Must call `.all()` to execute:
@@ -201,3 +239,4 @@ App runs at `http://localhost:3000`.
 - **No auth**: Anyone with a card URL can view it. Acceptable for birthday invites but not sensitive events.
 - **Email re-sends**: Currently no tracking of whether emails were already sent — clicking "Create & Send" always sends fresh emails to all recipients.
 - **No card editing**: Cards are immutable after creation.
+- **No auto-play sound**: Browser autoplay policies prevent sound on page load. Sounds only play on user interactions (button clicks, card flips).

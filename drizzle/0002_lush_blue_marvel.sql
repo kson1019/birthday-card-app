@@ -1,0 +1,1 @@
+ALTER TABLE `cards` ADD `theme` text DEFAULT 'default' NOT NULL;

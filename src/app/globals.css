@@ -56,3 +56,58 @@ body {
 .animate-fade-in {
   animation: fade-in 0.5s ease-out forwards;
 }
+
+/* Floating elements — rise from below viewport to above it */
+@keyframes float-up {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(calc(-100vh - 80px)) translateX(var(--drift, 40px)) rotate(var(--spin, 180deg));
+    opacity: 0;
+  }
+}
+
+/* Gentle horizontal sway overlay */
+@keyframes float-drift {
+  0%, 100% {
+    margin-left: 0;
+  }
+  50% {
+    margin-left: var(--sway, 20px);
+  }
+}
+
+/* Opacity pulse for static sparkle effect */
+@keyframes fade-in-out {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.floating-element {
+  animation: float-up linear infinite, float-drift ease-in-out infinite;
+  animation-duration: var(--duration, 8s), var(--sway-duration, 3s);
+}
+
+/* Disable all motion when user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .floating-element {
+    display: none;
+  }
+  .animate-float,
+  .animate-bounce,
+  .animate-fade-in {
+    animation: none;
+  }
+}

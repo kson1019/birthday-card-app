@@ -3,6 +3,7 @@
 import { useState } from "react";
 import CardFront from "./CardFront";
 import CardBack from "./CardBack";
+import { playFlipSound } from "@/lib/sounds";
 
 interface FlipCardProps {
   imagePath: string;
@@ -31,7 +32,7 @@ export default function FlipCard({
     <div
       className="w-full max-w-md mx-auto cursor-pointer select-none"
       style={{ perspective: "1000px" }}
-      onClick={() => setIsFlipped(!isFlipped)}
+      onClick={() => { setIsFlipped(!isFlipped); playFlipSound(); }}
     >
       <div
         className="relative w-full transition-transform duration-700 ease-in-out"

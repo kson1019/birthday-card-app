@@ -3,6 +3,7 @@ import { cards, recipients } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Confetti from "@/components/card/Confetti";
+import FloatingElements from "@/components/card/FloatingElements";
 import RsvpForm from "@/components/forms/RsvpForm";
 import { formatDateTime, getMapSearchUrl } from "@/lib/utils";
 
@@ -33,10 +34,11 @@ export default async function CardPage({ params, searchParams }: PageProps) {
   const mapUrl = getMapSearchUrl(card.location);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
-      <Confetti />
+    <main className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 relative">
+      {!!card.enableSound && <Confetti />}
+      {!!card.enableEmojis && <FloatingElements />}
 
-      <div className="max-w-2xl mx-auto px-4 py-8 md:py-16">
+      <div className="relative z-10 max-w-2xl mx-auto px-4 py-8 md:py-16">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="relative aspect-[3/4] bg-gray-100">
             <img
@@ -53,7 +55,7 @@ export default async function CardPage({ params, searchParams }: PageProps) {
           </div>
 
           <div className="p-6 md:p-8 space-y-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center">
+            <h2 className="text-lg font-semibold text-gray-800">
               {card.title}
             </h2>
 
@@ -62,7 +64,7 @@ export default async function CardPage({ params, searchParams }: PageProps) {
                 <p className="text-xs uppercase tracking-wider text-purple-600 font-semibold">
                   Hosted by
                 </p>
-                <p className="text-lg text-gray-800">{card.hostedBy}</p>
+                <p className="text-base text-gray-800">{card.hostedBy}</p>
               </div>
             )}
 
@@ -74,7 +76,7 @@ export default async function CardPage({ params, searchParams }: PageProps) {
                 href={mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-lg text-purple-700 underline decoration-purple-300 underline-offset-2 hover:decoration-purple-600"
+                className="text-base text-purple-700 underline decoration-purple-300 underline-offset-2 hover:decoration-purple-600"
               >
                 {card.location}
               </a>
@@ -84,7 +86,7 @@ export default async function CardPage({ params, searchParams }: PageProps) {
               <p className="text-xs uppercase tracking-wider text-purple-600 font-semibold">
                 When
               </p>
-              <p className="text-lg text-gray-800">{formatDateTime(card.datetime)}</p>
+              <p className="text-base text-gray-800">{formatDateTime(card.datetime)}</p>
             </div>
 
             {card.message && (
@@ -104,6 +106,7 @@ export default async function CardPage({ params, searchParams }: PageProps) {
               eventLocation={card.location}
               eventDatetime={card.datetime}
               eventDescription={card.message}
+              enableSound={!!card.enableSound}
             />
           </div>
         )}

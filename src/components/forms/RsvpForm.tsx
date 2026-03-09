@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Recipient } from "@/types";
 import { getRandomRsvpMessage } from "@/lib/constants";
+import { playPopSound, playSuccessSound, playDeclineSound } from "@/lib/sounds";
 import CalendarButton from "@/components/card/CalendarButton";
 
 interface RsvpFormProps {
@@ -12,6 +13,7 @@ interface RsvpFormProps {
   eventLocation?: string;
   eventDatetime?: string;
   eventDescription?: string;
+  enableSound?: boolean;
 }
 
 export default function RsvpForm({
@@ -21,6 +23,7 @@ export default function RsvpForm({
   eventLocation,
   eventDatetime,
   eventDescription,
+  enableSound = true,
 }: RsvpFormProps) {
   const [status, setStatus] = useState<"accepted" | "declined" | null>(
     currentResponse?.status === "pending" ? null : currentResponse?.status ?? null
@@ -49,6 +52,13 @@ export default function RsvpForm({
         setSuccessMessage(getRandomRsvpMessage(status));
         setIsSubmitted(true);
         setShowChangeForm(false);
+        if (enableSound) {
+          if (status === "accepted") {
+            playSuccessSound();
+          } else {
+            playDeclineSound();
+          }
+        }
       }
     } catch {
       // silently fail
@@ -104,7 +114,7 @@ export default function RsvpForm({
       <div className="flex gap-4 mb-6">
         <button
           type="button"
-          onClick={() => setStatus("accepted")}
+          onClick={() => { setStatus("accepted"); if (enableSound) playPopSound(); }}
           className={`flex-1 py-4 rounded-xl font-semibold text-lg transition-all ${
             status === "accepted"
               ? "bg-green-500 text-white shadow-lg scale-105"
@@ -116,7 +126,7 @@ export default function RsvpForm({
 
         <button
           type="button"
-          onClick={() => setStatus("declined")}
+          onClick={() => { setStatus("declined"); if (enableSound) playPopSound(); }}
           className={`flex-1 py-4 rounded-xl font-semibold text-lg transition-all ${
             status === "declined"
               ? "bg-red-400 text-white shadow-lg scale-105"

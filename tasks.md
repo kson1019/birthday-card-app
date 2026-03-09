@@ -8,96 +8,111 @@ Granular, actionable tasks for each implementation phase. Each task is scoped to
 
 ### 1.1 Random RSVP Confirmation Messages
 
-- [Y] **1.1.1** Create array of 10-15 fun confirmation messages in `src/lib/constants.ts`
+- [x] **1.1.1** Create array of 10-15 fun confirmation messages in `src/lib/constants.ts`
   - Examples: "Yay! Can't wait to see you! 🎈", "Party time! 🎉", "You're going to have a blast!"
   - Include both "accepted" and "declined" message variants
 
-- [ ] **1.1.2** Update `RsvpForm.tsx` to show random message on successful submission
+- [x] **1.1.2** Update `RsvpForm.tsx` to show random message on successful submission
   - Import messages from constants
   - Add success state with randomly selected message
   - Style the success message with playful animation (fade-in or bounce)
 
 ### 1.2 Add to Calendar Button
 
-- [ ] **1.2.1** Create `generateIcsFile()` helper function in `src/lib/utils.ts`
+- [x] **1.2.1** Create `generateIcsFile()` helper function in `src/lib/utils.ts`
   - Accept: title, location, datetime, description
   - Return: valid .ics file content string
   - Handle timezone (use UTC with local time display)
+  - Also added `generateGoogleCalendarUrl()` and `generateOutlookWebUrl()`
 
-- [ ] **1.2.2** Create `CalendarButton.tsx` component in `src/components/card/`
-  - Accept card data as props
-  - On click: generate .ics content, trigger download
-  - Style: calendar icon + "Add to Calendar" text
+- [x] **1.2.2** Create `CalendarButton.tsx` component in `src/components/card/`
+  - Dropdown picker with Google Calendar, Apple Calendar, Outlook, Outlook.com
+  - Google/Outlook.com open pre-filled URLs in new tabs
+  - Apple/Outlook download .ics files
 
-- [ ] **1.2.3** Add `CalendarButton` to `CardBack.tsx`
-  - Position below party details, above RSVP form
-  - Only show for recipients (when token is present)
+- [x] **1.2.3** Add `CalendarButton` to RSVP success screen
+  - Shows only after accepting (clicking "Yes")
+  - Displayed below the success message with "Add it to your calendar" prompt
 
 ---
 
-## Phase 2: Floating Animations
+## Phase 2: Floating Animations & Sound Effects
 
 ### 2.1 Database Changes
 
-- [ ] **2.1.1** Add `theme` column to cards schema
-  - Update `src/lib/db/schema.ts`: add `theme: text("theme").default("default")`
-  - Create Drizzle migration file
-  - Run migration: `npx drizzle-kit generate` then `npx drizzle-kit migrate`
+- [x] **2.1.1** Add `theme`, `enable_emojis`, `enable_sound` columns to cards schema
+  - `theme: text("theme").default("default")`
+  - `enable_emojis: integer("enable_emojis").default(1)`
+  - `enable_sound: integer("enable_sound").default(1)`
+  - Migrations: `drizzle/0002_lush_blue_marvel.sql`, `drizzle/0003_public_anita_blake.sql`
 
-- [ ] **2.1.2** Update TypeScript types
-  - Add `theme` to Card type in `src/types/index.ts`
-  - Update any API response types
+- [x] **2.1.2** Update TypeScript types
+  - Added `theme`, `enableEmojis`, `enableSound` to `Card` type
+  - Added `enableEmojis`, `enableSound` to `CreateCardRequest` type
 
 ### 2.2 Animation Infrastructure
 
-- [ ] **2.2.1** Define theme configurations in `src/lib/themes.ts`
-  - Create theme type: `{ id, name, elements, colors }`
-  - Define 4-5 themes: default, balloons, stars, hearts, confetti
-  - Each theme lists emoji/SVG elements and animation styles
+- [x] **2.2.1** Define theme configurations in `src/lib/themes.ts`
+  - Created theme type with id, name, emoji, elements, count, bgGradient
+  - Defined 5 themes: Confetti, Balloons, Stars, Hearts, Unicorn
+  - **Note:** Theme selector was later removed; all emojis now display together
 
-- [ ] **2.2.2** Add CSS keyframes to `globals.css`
-  - `@keyframes float-up` — elements rise from bottom
+- [x] **2.2.2** Add CSS keyframes to `globals.css`
+  - `@keyframes float-up` — elements rise from bottom to top
   - `@keyframes float-drift` — gentle horizontal sway
   - `@keyframes fade-in-out` — opacity cycle
-  - Add `prefers-reduced-motion` media query to disable animations
+  - Added `prefers-reduced-motion` media query to disable all animations
 
 ### 2.3 Floating Elements Component
 
-- [ ] **2.3.1** Create `FloatingElements.tsx` component
-  - Accept `theme` prop
-  - Generate 15-20 randomly positioned elements
-  - Use CSS animations with randomized delays and durations
-  - Use `position: fixed` with `pointer-events: none`
+- [x] **2.3.1** Create `FloatingElements.tsx` component
+  - Shows all 21 emojis from all themes mixed together
+  - 20 randomly positioned elements with varied sizes (2.4–4.0rem)
+  - CSS animations with randomized delays, durations, drift, and spin
+  - `position: fixed` with `pointer-events: none` and `z-[1]`
 
-- [ ] **2.3.2** Add reduced motion support
-  - Check `prefers-reduced-motion` media query
-  - If reduced motion preferred, show static decorations or nothing
+- [x] **2.3.2** Add reduced motion support
+  - `prefers-reduced-motion` media query hides floating elements entirely
 
-### 2.4 Theme Picker UI
+### 2.4 Card Effects Toggles
 
-- [ ] **2.4.1** Create `ThemeSelector.tsx` component in `src/components/forms/`
-  - Display theme options as visual cards/buttons
-  - Show preview of floating elements for each theme
-  - Emit selected theme ID on change
+- [x] **2.4.1** Add emoji and sound toggle switches to `CardCreatorForm.tsx`
+  - Two toggle switches in "Card Effects" section
+  - "Floating Emojis" toggle (🎈) — on by default
+  - "Sound Effects" toggle (🔊) — on by default
+  - Both saved to database per card
 
-- [ ] **2.4.2** Integrate theme selector into `CardCreatorForm.tsx`
-  - Add theme selector after image upload
-  - Include theme in form state
-  - Submit theme with card creation API call
+- [x] **2.4.2** Update card creation API to save toggles
+  - `POST /api/cards` accepts `enableEmojis` and `enableSound`
 
-- [ ] **2.4.3** Update card creation API to save theme
-  - Modify `POST /api/cards` to accept and store theme field
+### 2.5 Display & Sound
 
-### 2.5 Display Floating Elements
+- [x] **2.5.1** Update card display page to conditionally render effects
+  - FloatingElements only renders when `enableEmojis` is on
+  - Confetti only renders when `enableSound` is on
 
-- [ ] **2.5.1** Update card display page to render floating elements
-  - Modify `src/app/card/[id]/page.tsx`
-  - Pass card's theme to `FloatingElements` component
-  - Position behind card content (z-index)
+- [x] **2.5.2** Create sound effects system (`src/lib/sounds.ts`)
+  - Web Audio API synthesized sounds (no audio files needed)
+  - Pop sound on Yes/No button click
+  - Ascending chime on RSVP accepted
+  - Descending tone on RSVP declined
+  - Flip sound on card flip (preview)
+  - All sounds respect `enableSound` toggle
+  - **Note:** Confetti auto-play sound removed (browser autoplay policy blocks it)
 
 ---
 
-## Phase 3: Reminder System
+---
+
+## Post-MVP Phases
+
+Phases 3, 4, and 5 are deferred after the initial release to ship the MVP sooner. All tasks below remain valid and can be picked up post-launch.
+
+---
+
+## Phase 3: Reminder System *(Post-MVP)*
+
+> Deferred — the reminder flow added complexity without enough reciprocal UX value for MVP. Will be revisited post-launch.
 
 ### 3.1 Database Setup
 
@@ -121,10 +136,9 @@ Granular, actionable tasks for each implementation phase. Each task is scoped to
   - Insert reminder record
   - Return success/error response
 
-- [ ] **3.2.2** Create `GET /api/reminders` endpoint (optional)
-  - Accept: `recipientToken`
+- [ ] **3.2.2** Create `GET /api/reminders` endpoint
+  - Accept: `?token=xxx`
   - Return: list of scheduled reminders for this recipient
-  - Used to show existing reminders in UI
 
 ### 3.3 Reminder Email
 
@@ -141,29 +155,27 @@ Granular, actionable tasks for each implementation phase. Each task is scoped to
 ### 3.4 Reminder UI
 
 - [ ] **3.4.1** Create `ReminderPicker.tsx` component
-  - Date picker input (native or simple custom)
+  - Preset options: 1 hour before, 1 day before, 1 week before, Custom
+  - Custom option reveals a `datetime-local` picker
   - Validate: must be future date, before party date
-  - Submit button: "Remind Me"
   - Show loading/success/error states
 
 - [ ] **3.4.2** Add reminder picker to card page
-  - Modify `src/app/card/[id]/page.tsx`
-  - Show after RSVP form (for pending recipients)
+  - Show below RSVP form for pending recipients
   - Pass party datetime for validation
 
 ### 3.5 Cron Setup
 
-- [ ] **3.5.1** Create Vercel cron configuration (if deploying to Vercel)
-  - Add `vercel.json` with cron schedule (e.g., every hour)
+- [ ] **3.5.1** Create Vercel cron configuration
+  - Add `vercel.json` with hourly cron schedule
   - Point to `/api/reminders/send`
 
 - [ ] **3.5.2** Document manual cron setup for self-hosted
-  - Add instructions to README
-  - Example: `0 * * * * curl -X POST http://localhost:3000/api/reminders/send`
+  - Example: `curl -X POST http://localhost:3000/api/reminders/send`
 
 ---
 
-## Phase 4: Photo Albums
+## Phase 4: Photo Albums *(Post-MVP)*
 
 ### 4.1 Database Setup
 
@@ -198,7 +210,7 @@ Granular, actionable tasks for each implementation phase. Each task is scoped to
   - Delete record from database
   - (Future: add authorization check for host-only deletion)
 
-### 4.3 Album Page
+### 4.3 Album Page 
 
 - [ ] **4.3.1** Create album page at `src/app/card/[id]/album/page.tsx`
   - Server component that fetches card and photos
@@ -242,7 +254,7 @@ Granular, actionable tasks for each implementation phase. Each task is scoped to
 
 ---
 
-## Phase 5: AI Smart Templates
+## Phase 5: AI Smart Templates *(Post-MVP)*
 
 ### 5.1 OpenAI Integration
 
@@ -322,14 +334,15 @@ Granular, actionable tasks for each implementation phase. Each task is scoped to
 
 ## Quick Reference: Task Counts
 
-| Phase | Tasks | Estimated Sessions |
-|-------|-------|-------------------|
-| 1     | 5     | 1-2               |
-| 2     | 11    | 2-3               |
-| 3     | 10    | 2-3               |
-| 4     | 12    | 3-4               |
-| 5     | 12    | 3-4               |
-| **Total** | **50** | **11-16** |
+| Phase | Tasks | Status |
+|-------|-------|--------|
+| 1     | 5     | ✅ Complete |
+| 2     | 9     | ✅ Complete |
+| 3     | 10    | ✅ Complete |
+| 4     | 12    | Post-MVP |
+| 5     | 12    | Post-MVP |
+| **MVP Total** | **24** | **Complete — ready to ship** |
+| **Post-MVP** | **24** | Deferred |
 
 ---
 

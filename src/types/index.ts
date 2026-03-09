@@ -7,6 +7,9 @@ export interface Card {
   location: string;
   datetime: string;
   message: string;
+  theme: string;
+  enableEmojis: number;
+  enableSound: number;
   createdAt: string;
 }
 
@@ -40,6 +43,9 @@ export interface CreateCardRequest {
   location: string;
   datetime: string;
   message: string;
+  theme?: string;
+  enableEmojis?: boolean;
+  enableSound?: boolean;
   recipients: { email: string; name?: string }[];
 }
 

@@ -15,6 +15,27 @@
       "when": 1772367000000,
       "tag": "0001_hosted_by",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1772901398110,
+      "tag": "0002_lush_blue_marvel",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1772928496012,
+      "tag": "0003_public_anita_blake",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1773024407145,
+      "tag": "0004_mighty_mongu",
+      "breakpoints": true
     }
   ]
 }

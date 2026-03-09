@@ -13,6 +13,8 @@ export default function CardCreatorForm() {
   const [location, setLocation] = useState("");
   const [datetime, setDatetime] = useState("");
   const [message, setMessage] = useState("");
+  const [enableEmojis, setEnableEmojis] = useState(true);
+  const [enableSound, setEnableSound] = useState(true);
   const [recipients, setRecipients] = useState<
     { email: string; name?: string }[]
   >([]);
@@ -51,6 +53,8 @@ export default function CardCreatorForm() {
           location,
           datetime,
           message,
+          enableEmojis,
+          enableSound,
           recipients,
         }),
       });
@@ -92,6 +96,8 @@ export default function CardCreatorForm() {
       setLocation("");
       setDatetime("");
       setMessage("");
+      setEnableEmojis(true);
+      setEnableSound(true);
       setRecipients([]);
       setShowPreview(false);
     } catch {
@@ -182,6 +188,62 @@ export default function CardCreatorForm() {
             rows={3}
             className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-700 focus:border-purple-400 focus:outline-none transition-colors resize-none"
           />
+        </div>
+
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-gray-700">
+            Card Effects
+          </label>
+
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+            <div className="flex items-center gap-3">
+              <span className="text-xl">🎈</span>
+              <div>
+                <p className="text-sm font-medium text-gray-700">Floating Emojis</p>
+                <p className="text-xs text-gray-400">Emojis float across the card</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={enableEmojis}
+              onClick={() => setEnableEmojis(!enableEmojis)}
+              className={`relative w-11 h-6 rounded-full transition-colors ${
+                enableEmojis ? "bg-purple-500" : "bg-gray-300"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                  enableEmojis ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+            <div className="flex items-center gap-3">
+              <span className="text-xl">🔊</span>
+              <div>
+                <p className="text-sm font-medium text-gray-700">Sound Effects</p>
+                <p className="text-xs text-gray-400">Play sounds on interactions</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={enableSound}
+              onClick={() => setEnableSound(!enableSound)}
+              className={`relative w-11 h-6 rounded-full transition-colors ${
+                enableSound ? "bg-purple-500" : "bg-gray-300"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                  enableSound ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         <RecipientInput value={recipients} onChange={setRecipients} />

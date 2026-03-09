@@ -5,7 +5,6 @@ import confetti from "canvas-confetti";
 
 export default function Confetti() {
   useEffect(() => {
-    // Initial center burst
     confetti({
       particleCount: 100,
       spread: 70,
@@ -13,7 +12,6 @@ export default function Confetti() {
       colors: ["#ff6b9d", "#c44dff", "#ffb347", "#87ceeb", "#ff4500"],
     });
 
-    // Side bursts after a short delay
     const timer = setTimeout(() => {
       confetti({
         particleCount: 50,

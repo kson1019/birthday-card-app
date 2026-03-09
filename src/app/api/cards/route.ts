@@ -41,6 +41,9 @@ export async function POST(request: Request) {
           location: body.location,
           datetime: body.datetime,
           message: body.message,
+          theme: body.theme ?? "default",
+          enableEmojis: body.enableEmojis !== false ? 1 : 0,
+          enableSound: body.enableSound !== false ? 1 : 0,
         })
         .returning()
         .all();
