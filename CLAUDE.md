@@ -23,7 +23,7 @@ App runs at http://localhost:3000
 | Framework | Next.js 16 (App Router) |
 | Language | TypeScript 5 |
 | Styling | Tailwind CSS v4 |
-| Database | SQLite + better-sqlite3 + Drizzle ORM |
+| Database | Turso (libSQL) + Drizzle ORM |
 | Email | Resend + React Email |
 | Animations | CSS 3D + canvas-confetti |
 
@@ -51,7 +51,7 @@ src/
 
 1. **No Authentication**: Single-user app. Recipients use UUID tokens in URLs.
 2. **Server Components First**: Only use `"use client"` when interactivity is needed.
-3. **SQLite Database**: File-based, uses WAL mode. Schema in Drizzle ORM.
+3. **Turso Database**: Cloud-hosted libSQL. Connection via `@libsql/client` + Drizzle ORM.
 4. **Local Image Storage**: Images in `public/uploads/`. Store relative paths in DB.
 
 ## Database Commands
@@ -64,18 +64,16 @@ npx drizzle-kit generate
 npx drizzle-kit migrate
 ```
 
-### Drizzle ORM Quirk (IMPORTANT)
+### Drizzle ORM with Turso
 
-The SQLite sync driver requires `.all()` to execute queries with `.returning()`:
+The Turso client is async — all queries return Promises. Use standard `await` syntax:
 
 ```typescript
-// WRONG - returns query builder, not data
-const [row] = db.insert(cards).values(data).returning();
-
-// CORRECT
-const rows = db.insert(cards).values(data).returning().all();
-const row = rows[0];
+// CORRECT — async, returns data directly
+const [row] = await db.insert(cards).values(data).returning();
 ```
+
+The old `.all()` pattern (used with the sync `better-sqlite3` driver) is no longer needed.
 
 ## Code Conventions
 
@@ -122,6 +120,8 @@ Required in `.env.local`:
 ```
 RESEND_API_KEY=re_...
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
+TURSO_DATABASE_URL=libsql://birthday-card-app-kson1019.aws-us-east-1.turso.io
+TURSO_AUTH_TOKEN=...
 ```
 
 ## Common Tasks

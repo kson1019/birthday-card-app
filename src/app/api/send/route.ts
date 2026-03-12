@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     const results = await Promise.allSettled(
       cardRecipients.map((recipient) =>
         resend.emails.send({
-          from: "Birthday Cards <onboarding@resend.dev>",
+          from: "Birthday Cards <invitations@familylaunchpad.com>",
           to: recipient.email,
           subject: `You're Invited! ${card.title}`,
           react: InvitationEmail({

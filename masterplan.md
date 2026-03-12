@@ -26,7 +26,7 @@ An all-in-one digital birthday invitation platform designed for kids' birthday p
 | Language | TypeScript | 5.x |
 | Runtime | React | 19.2.3 |
 | Styling | Tailwind CSS | 4.x |
-| Database | SQLite + better-sqlite3 | 12.6.2 |
+| Database | Turso (libSQL) + @libsql/client | 0.17.x |
 | ORM | Drizzle ORM | 0.45.1 |
 | Email | Resend + React Email | 6.9.2 / 1.0.8 |
 | Animations | CSS 3D transforms + canvas-confetti + CSS keyframes | 1.9.4 |
@@ -52,10 +52,10 @@ An all-in-one digital birthday invitation platform designed for kids' birthday p
   - `CardCreatorForm.tsx` — form state + toggles
   - `RsvpForm.tsx` — form submission + sounds
 
-### SQLite for Simplicity
-- Zero configuration, file-based database
-- WAL mode enabled for concurrent reads
-- Foreign keys enforced
+### Turso (libSQL) for the Database
+- Cloud-hosted libSQL database via Turso
+- Connection via `@libsql/client` + `drizzle-orm/libsql`
+- Async driver — all queries use standard `await` (no `.all()` quirk)
 - **Migration path**: Schema is Drizzle-based, can switch to Postgres by changing the driver
 
 ### File-Based Image Storage
@@ -323,6 +323,8 @@ File: `.env.local` (gitignored)
 |----------|----------|-------------|
 | `RESEND_API_KEY` | Yes | Resend API key (starts with `re_`) |
 | `NEXT_PUBLIC_BASE_URL` | Yes | App URL (e.g., `http://localhost:3000`) |
+| `TURSO_DATABASE_URL` | Yes | Turso DB URL (e.g., `libsql://...turso.io`) |
+| `TURSO_AUTH_TOKEN` | Yes | Turso auth token from the Turso dashboard |
 | `OPENAI_API_KEY` | Phase 5 (Post-MVP) | OpenAI API key for AI features |
 
 ### Setup Instructions
@@ -331,6 +333,8 @@ File: `.env.local` (gitignored)
 # .env.local
 RESEND_API_KEY=re_your_api_key_here
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
+TURSO_DATABASE_URL=libsql://birthday-card-app-kson1019.aws-us-east-1.turso.io
+TURSO_AUTH_TOKEN=your_turso_auth_token_here
 ```
 
 ### Getting a Resend API Key
