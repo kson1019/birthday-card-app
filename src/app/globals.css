@@ -110,6 +110,16 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Fade out the entire floating emoji layer after 5s */
+@keyframes emojis-fade-out {
+  0%, 80% { opacity: 1; }
+  100%     { opacity: 0; }
+}
+
+.floating-elements-container {
+  animation: emojis-fade-out 6.25s ease-out forwards;
+}
+
 /* Disable all motion when user prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .floating-element {
