@@ -158,6 +158,7 @@ const headingStyle: React.CSSProperties = {
 const greetingStyle: React.CSSProperties = {
   fontSize: "16px",
   color: "#444",
+  textAlign: "center" as const,
   margin: "0 0 8px",
 };
 
