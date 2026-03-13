@@ -95,7 +95,7 @@ export default function CalendarButton({
     <div ref={ref} className="relative inline-block">
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 rounded-xl text-white text-sm font-semibold transition-colors shadow-md hover:shadow-lg"
+        className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 rounded-full text-white text-sm font-semibold transition-colors shadow-md hover:shadow-lg"
       >
         <Calendar className="w-4 h-4" />
         Add to Calendar

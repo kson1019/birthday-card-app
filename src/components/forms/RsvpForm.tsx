@@ -118,7 +118,7 @@ export default function RsvpForm({
         <button
           type="button"
           onClick={() => { setStatus("accepted"); if (enableSound) playPopSound(); }}
-          className={`flex-1 py-4 rounded-xl font-semibold text-lg transition-all ${
+          className={`flex-1 py-4 rounded-full font-semibold text-lg transition-all ${
             status === "accepted"
               ? "bg-green-500 text-white shadow-lg scale-105"
               : "bg-green-50 text-green-700 border-2 border-green-200 hover:bg-green-100"
@@ -130,7 +130,7 @@ export default function RsvpForm({
         <button
           type="button"
           onClick={() => { setStatus("declined"); if (enableSound) playPopSound(); }}
-          className={`flex-1 py-4 rounded-xl font-semibold text-lg transition-all ${
+          className={`flex-1 py-4 rounded-full font-semibold text-lg transition-all ${
             status === "declined"
               ? "bg-red-400 text-white shadow-lg scale-105"
               : "bg-red-50 text-red-600 border-2 border-red-200 hover:bg-red-100"
@@ -163,7 +163,7 @@ export default function RsvpForm({
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="w-full py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+            className="w-full py-3 bg-purple-600 text-white rounded-full font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
           >
             {isSubmitting ? "Sending..." : "Submit Response"}
           </button>

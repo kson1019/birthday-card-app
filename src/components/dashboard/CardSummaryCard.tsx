@@ -142,14 +142,14 @@ export default function CardSummaryCard({ card, onDelete }: CardSummaryCardProps
           <button
             onClick={handleSend}
             disabled={isSending || card.totalCount === 0}
-            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-3 py-1.5 text-xs font-medium rounded-full bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isSending ? "Sending..." : "Send"}
           </button>
           <button
             onClick={handleDelete}
             disabled={isDeleting}
-            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-3 py-1.5 text-xs font-medium rounded-full bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isDeleting ? "Deleting..." : "Delete"}
           </button>

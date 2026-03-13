@@ -290,7 +290,7 @@ export default function CardCreatorForm() {
             type="button"
             onClick={() => setShowPreview(!showPreview)}
             disabled={!imagePath || !headline}
-            className="flex-1 px-6 py-3 border-2 border-purple-500 text-purple-600 rounded-xl font-semibold hover:bg-purple-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-1 px-6 py-3 border-2 border-purple-500 text-purple-600 rounded-full font-semibold hover:bg-purple-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {showPreview ? "Hide Preview" : "Preview Card"}
           </button>
@@ -299,7 +299,7 @@ export default function CardCreatorForm() {
             type="button"
             onClick={handleSubmit}
             disabled={!isFormValid || isSubmitting}
-            className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-full font-semibold hover:bg-purple-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {isSubmitting ? "Sending..." : "Create & Send Invitations"}
           </button>
