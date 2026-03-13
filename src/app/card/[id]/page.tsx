@@ -39,7 +39,7 @@ export default async function CardPage({ params, searchParams }: PageProps) {
       {!!card.enableSound && <Confetti />}
       {!!card.enableEmojis && <FloatingElements />}
 
-      <div className="relative z-10 max-w-2xl mx-auto px-4 py-8 md:py-16">
+      <div className="relative z-10 max-w-2xl mx-auto px-6 py-8 md:px-4 md:py-16">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="relative aspect-[3/4] bg-gray-100">
             <img

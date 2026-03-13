@@ -45,7 +45,7 @@ export default function FloatingElements() {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none z-[1]"
+      className="fixed inset-0 pointer-events-none z-[15]"
     >
       {elements.map((el) => (
         <span
