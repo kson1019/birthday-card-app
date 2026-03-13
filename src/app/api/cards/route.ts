@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const cardRows = db
+    const cardRows = await db
       .insert(cards)
       .values({
         imagePath: body.imagePath,
@@ -45,8 +45,7 @@ export async function POST(request: Request) {
         enableEmojis: body.enableEmojis !== false ? 1 : 0,
         enableSound: body.enableSound !== false ? 1 : 0,
       })
-      .returning()
-      .all();
+      .returning();
 
     const card = cardRows[0];
 
@@ -57,11 +56,10 @@ export async function POST(request: Request) {
       token: generateToken(),
     }));
 
-    const insertedRecipients = db
+    const insertedRecipients = await db
       .insert(recipients)
       .values(recipientRows)
-      .returning()
-      .all();
+      .returning();
 
     return NextResponse.json({ ...card, recipients: insertedRecipients }, { status: 201 });
   } catch (error) {
@@ -75,28 +73,30 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const allCards = db.select().from(cards).orderBy(desc(cards.createdAt)).all();
+    const allCards = await db.select().from(cards).orderBy(desc(cards.createdAt));
 
-    const cardsWithCounts = allCards.map((card: typeof cards.$inferSelect) => {
-      const counts = db
-        .select({
-          total: sql<number>`count(*)`,
-          accepted: sql<number>`sum(case when ${recipients.status} = 'accepted' then 1 else 0 end)`,
-          declined: sql<number>`sum(case when ${recipients.status} = 'declined' then 1 else 0 end)`,
-          pending: sql<number>`sum(case when ${recipients.status} = 'pending' then 1 else 0 end)`,
-        })
-        .from(recipients)
-        .where(eq(recipients.cardId, card.id))
-        .get();
+    const cardsWithCounts = await Promise.all(
+      allCards.map(async (card: typeof cards.$inferSelect) => {
+        const countRows = await db
+          .select({
+            total: sql<number>`count(*)`,
+            accepted: sql<number>`sum(case when ${recipients.status} = 'accepted' then 1 else 0 end)`,
+            declined: sql<number>`sum(case when ${recipients.status} = 'declined' then 1 else 0 end)`,
+            pending: sql<number>`sum(case when ${recipients.status} = 'pending' then 1 else 0 end)`,
+          })
+          .from(recipients)
+          .where(eq(recipients.cardId, card.id));
 
-      return {
-        ...card,
-        totalCount: counts?.total ?? 0,
-        acceptedCount: counts?.accepted ?? 0,
-        declinedCount: counts?.declined ?? 0,
-        pendingCount: counts?.pending ?? 0,
-      };
-    });
+        const counts = countRows[0];
+        return {
+          ...card,
+          totalCount: counts?.total ?? 0,
+          acceptedCount: counts?.accepted ?? 0,
+          declinedCount: counts?.declined ?? 0,
+          pendingCount: counts?.pending ?? 0,
+        };
+      })
+    );
 
     return NextResponse.json(cardsWithCounts);
   } catch (error) {

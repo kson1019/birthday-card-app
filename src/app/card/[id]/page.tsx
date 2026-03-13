@@ -19,16 +19,17 @@ export default async function CardPage({ params, searchParams }: PageProps) {
   const cardId = parseInt(id, 10);
   if (isNaN(cardId)) notFound();
 
-  const card = db.select().from(cards).where(eq(cards.id, cardId)).get();
+  const cardRows = await db.select().from(cards).where(eq(cards.id, cardId));
+  const card = cardRows[0];
   if (!card) notFound();
 
   let currentRecipient = null;
   if (token) {
-    currentRecipient = db
+    const recipientRows = await db
       .select()
       .from(recipients)
-      .where(eq(recipients.token, token))
-      .get() ?? null;
+      .where(eq(recipients.token, token));
+    currentRecipient = recipientRows[0] ?? null;
   }
 
   const mapUrl = getMapSearchUrl(card.location);

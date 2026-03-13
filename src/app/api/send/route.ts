@@ -17,17 +17,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const card = db.select().from(cards).where(eq(cards.id, cardId)).get();
+    const cardRows = await db.select().from(cards).where(eq(cards.id, cardId));
+    const card = cardRows[0];
 
     if (!card) {
       return NextResponse.json({ error: "Card not found" }, { status: 404 });
     }
 
-    const cardRecipients = db
+    const cardRecipients = await db
       .select()
       .from(recipients)
-      .where(eq(recipients.cardId, cardId))
-      .all();
+      .where(eq(recipients.cardId, cardId));
 
     const baseUrl = getBaseUrl(request);
 

@@ -22,11 +22,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const recipient = db
+    const recipientRows = await db
       .select()
       .from(recipients)
-      .where(eq(recipients.token, body.token))
-      .get();
+      .where(eq(recipients.token, body.token));
+
+    const recipient = recipientRows[0];
 
     if (!recipient) {
       return NextResponse.json(
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const updatedRows = db
+    const updatedRows = await db
       .update(recipients)
       .set({
         status: body.status,
@@ -43,8 +44,7 @@ export async function POST(request: Request) {
         respondedAt: new Date().toISOString(),
       })
       .where(eq(recipients.token, body.token))
-      .returning()
-      .all();
+      .returning();
 
     return NextResponse.json(updatedRows[0]);
   } catch (error) {

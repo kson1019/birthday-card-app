@@ -15,21 +15,21 @@ export async function GET(
       return NextResponse.json({ error: "Invalid card ID" }, { status: 400 });
     }
 
-    const card = db
+    const cardRows = await db
       .select()
       .from(cards)
-      .where(eq(cards.id, cardId))
-      .get();
+      .where(eq(cards.id, cardId));
+
+    const card = cardRows[0];
 
     if (!card) {
       return NextResponse.json({ error: "Card not found" }, { status: 404 });
     }
 
-    const cardRecipients = db
+    const cardRecipients = await db
       .select()
       .from(recipients)
-      .where(eq(recipients.cardId, cardId))
-      .all();
+      .where(eq(recipients.cardId, cardId));
 
     const { searchParams } = new URL(request.url);
     const token = searchParams.get("token");
@@ -37,7 +37,7 @@ export async function GET(
 
     if (token) {
       currentRecipient =
-        cardRecipients.find((r: { token: string }) => r.token === token) || null;
+        cardRecipients.find((r: typeof recipients.$inferSelect) => r.token === token) || null;
     }
 
     return NextResponse.json({
@@ -66,9 +66,12 @@ export async function DELETE(
       return NextResponse.json({ error: "Invalid card ID" }, { status: 400 });
     }
 
-    const result = db.delete(cards).where(eq(cards.id, cardId)).run();
+    const deleted = await db
+      .delete(cards)
+      .where(eq(cards.id, cardId))
+      .returning();
 
-    if (result.changes === 0) {
+    if (deleted.length === 0) {
       return NextResponse.json({ error: "Card not found" }, { status: 404 });
     }
 
