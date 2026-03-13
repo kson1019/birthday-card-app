@@ -104,6 +104,12 @@ h1, h2, h3, h4, h5, h6 {
   animation-duration: var(--duration, 8s), var(--sway-duration, 3s);
 }
 
+@media (max-width: 640px) {
+  .floating-element {
+    font-size: calc(var(--size) * 0.5) !important;
+  }
+}
+
 /* Disable all motion when user prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .floating-element {

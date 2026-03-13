@@ -54,7 +54,8 @@ export default function FloatingElements() {
           style={{
             left: `${el.left}%`,
             top: "100%",
-            fontSize: `${el.size}rem`,
+            fontSize: `var(--size)`,
+            "--size": `${el.size}rem`,
             "--duration": `${el.duration}s`,
             "--drift": `${el.drift}px`,
             "--spin": `${el.spin}deg`,
