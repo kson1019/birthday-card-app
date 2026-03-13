@@ -13,6 +13,8 @@ export default function CardCreatorForm() {
   const [location, setLocation] = useState("");
   const [datetime, setDatetime] = useState("");
   const [message, setMessage] = useState("");
+  const [durationHours, setDurationHours] = useState(2);
+  const [durationMins, setDurationMins] = useState(0);
   const [enableEmojis, setEnableEmojis] = useState(true);
   const [enableSound, setEnableSound] = useState(true);
   const [recipients, setRecipients] = useState<
@@ -53,6 +55,7 @@ export default function CardCreatorForm() {
           location,
           datetime,
           message,
+          durationMinutes: durationHours * 60 + durationMins,
           enableEmojis,
           enableSound,
           recipients,
@@ -96,6 +99,8 @@ export default function CardCreatorForm() {
       setLocation("");
       setDatetime("");
       setMessage("");
+      setDurationHours(2);
+      setDurationMins(0);
       setEnableEmojis(true);
       setEnableSound(true);
       setRecipients([]);
@@ -175,6 +180,37 @@ export default function CardCreatorForm() {
             onChange={(e) => setDatetime(e.target.value)}
             className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-700 focus:border-purple-400 focus:outline-none transition-colors"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Party Duration
+          </label>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 flex-1">
+              <input
+                type="number"
+                min={0}
+                max={23}
+                value={durationHours}
+                onChange={(e) => setDurationHours(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
+                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-700 focus:border-purple-400 focus:outline-none transition-colors text-center"
+              />
+              <span className="text-sm text-gray-500 whitespace-nowrap">hr</span>
+            </div>
+            <div className="flex items-center gap-2 flex-1">
+              <input
+                type="number"
+                min={0}
+                max={59}
+                step={15}
+                value={durationMins}
+                onChange={(e) => setDurationMins(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
+                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-700 focus:border-purple-400 focus:outline-none transition-colors text-center"
+              />
+              <span className="text-sm text-gray-500 whitespace-nowrap">min</span>
+            </div>
+          </div>
         </div>
 
         <div>

@@ -31,6 +31,10 @@ export async function POST(request: Request) {
 
     const baseUrl = getBaseUrl(request);
 
+    // imagePath is a full URL when stored via Vercel Blob, or a relative path for legacy local uploads
+    const resolveImageUrl = (p: string) =>
+      p.startsWith("http://") || p.startsWith("https://") ? p : `${baseUrl}${p}`;
+
     const results = await Promise.allSettled(
       cardRecipients.map((recipient) =>
         resend.emails.send({
@@ -44,7 +48,7 @@ export async function POST(request: Request) {
             location: card.location,
             datetime: card.datetime,
             message: card.message,
-            imagePath: `${baseUrl}${card.imagePath}`,
+            imagePath: resolveImageUrl(card.imagePath),
             cardUrl: `${baseUrl}/card/${card.id}?token=${recipient.token}`,
             recipientName: recipient.name ?? undefined,
           }),

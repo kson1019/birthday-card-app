@@ -106,6 +106,7 @@ export default async function CardPage({ params, searchParams }: PageProps) {
               eventLocation={card.location}
               eventDatetime={card.datetime}
               eventDescription={card.message}
+              eventDurationMinutes={card.durationMinutes}
               enableSound={!!card.enableSound}
             />
           </div>

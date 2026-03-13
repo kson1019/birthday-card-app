@@ -1,0 +1,13 @@
+{"sessionId":"605e99","location":"api/cards","message":"entry","data":{"imagePath":"/uploads/672102d4-9ab0-4521-8b6c-ed1f5ec8e080.jpg","headline":"Test","title":"Test","location":"Test","datetime":"2026-03-13T19:19","hasMessage":true,"recipientCount":1},"timestamp":1773357574947}
+{"sessionId":"605e99","location":"api/cards","message":"cardRows","data":{"count":1,"firstId":15,"firstKeys":["id","imagePath","headline","title","hostedBy","location","datetime","message","theme","enableEmojis","enableSound","createdAt"]},"timestamp":1773357574950}
+{"sessionId":"605e99","location":"api/cards","message":"result","data":{"cardId":15,"recipientCount":1},"timestamp":1773357574950}
+{"sessionId":"605e99","location":"api/send","message":"entry","data":{"cardId":15},"timestamp":1773357575021}
+{"sessionId":"605e99","location":"api/send","message":"result","data":{"sent":1,"failed":0,"errors":[]},"timestamp":1773357575222}
+{"sessionId":"605e99","location":"upload/route.ts:entry","message":"Upload request received","data":{"hasFile":true,"fileType":"image/jpeg","fileSize":4050364,"cwd":"/Users/koni/Documents/vibe coding/Birthday Card App"},"timestamp":1773358563426,"hypothesisId":"H-A,H-B,H-C,H-D,H-E"}
+{"sessionId":"605e99","location":"upload/route.ts:pre-mkdir","message":"About to mkdir and write","data":{"uploadDir":"/Users/koni/Documents/vibe coding/Birthday Card App/public/uploads","filename":"ff770aca-6c27-4223-8c3b-73ee40b5f5ea.jpg"},"timestamp":1773358563426,"hypothesisId":"H-A,H-D"}
+{"sessionId":"605e99","location":"upload/route.ts:success","message":"File written successfully","data":{"returnedPath":"/uploads/ff770aca-6c27-4223-8c3b-73ee40b5f5ea.jpg"},"timestamp":1773358563436,"hypothesisId":"H-C"}
+{"sessionId":"605e99","location":"api/cards","message":"entry","data":{"imagePath":"/uploads/ff770aca-6c27-4223-8c3b-73ee40b5f5ea.jpg","headline":"Test","title":"Test","location":"Test","datetime":"2026-03-13T19:36","hasMessage":true,"recipientCount":1},"timestamp":1773358584012}
+{"sessionId":"605e99","location":"api/cards","message":"cardRows","data":{"count":1,"firstId":16,"firstKeys":["id","imagePath","headline","title","hostedBy","location","datetime","message","theme","enableEmojis","enableSound","createdAt"]},"timestamp":1773358584014}
+{"sessionId":"605e99","location":"api/cards","message":"result","data":{"cardId":16,"recipientCount":1},"timestamp":1773358584015}
+{"sessionId":"605e99","location":"api/send","message":"entry","data":{"cardId":16},"timestamp":1773358584023}
+{"sessionId":"605e99","location":"api/send","message":"result","data":{"sent":1,"failed":0,"errors":[]},"timestamp":1773358584231}

@@ -8,6 +8,7 @@ export interface Card {
   datetime: string;
   message: string;
   theme: string;
+  durationMinutes: number;
   enableEmojis: number;
   enableSound: number;
   createdAt: string;
@@ -44,6 +45,7 @@ export interface CreateCardRequest {
   datetime: string;
   message: string;
   theme?: string;
+  durationMinutes?: number;
   enableEmojis?: boolean;
   enableSound?: boolean;
   recipients: { email: string; name?: string }[];

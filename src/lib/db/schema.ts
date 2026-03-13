@@ -11,6 +11,7 @@ export const cards = sqliteTable("cards", {
   datetime: text("datetime").notNull(),
   message: text("message").notNull(),
   theme: text("theme").notNull().default("default"),
+  durationMinutes: integer("duration_minutes").notNull().default(180),
   enableEmojis: integer("enable_emojis").notNull().default(1),
   enableSound: integer("enable_sound").notNull().default(1),
   createdAt: text("created_at")

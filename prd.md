@@ -192,7 +192,7 @@ OPENAI_API_KEY=sk-...          # Phase 5 only
 
 ### Phase 1: RSVP Enhancements ✅
 - [x] Random fun confirmation messages on RSVP submit
-- [x] Add-to-Calendar dropdown (Google, Apple, Outlook, Outlook.com)
+- [x] Add-to-Calendar dropdown (Google, Apple, Outlook, Outlook.com) with pre-populated title, date/time, location, and message from the invitation
 - [ ] "Remind me later" button with date picker (moved to Phase 3)
 - [ ] Email reminder system (moved to Phase 3)
 

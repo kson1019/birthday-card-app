@@ -19,7 +19,7 @@ interface IcsEventParams {
   location: string;
   datetime: string;
   description?: string;
-  durationHours?: number;
+  durationMinutes?: number;
 }
 
 function formatDateToIcs(date: Date): string {
@@ -38,10 +38,10 @@ export function generateIcsFile({
   location,
   datetime,
   description = "",
-  durationHours = 3,
+  durationMinutes = 180,
 }: IcsEventParams): string {
   const startDate = new Date(datetime);
-  const endDate = new Date(startDate.getTime() + durationHours * 60 * 60 * 1000);
+  const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
 
   const uid = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}@birthdaycard.app`;
 
@@ -73,10 +73,10 @@ export function generateGoogleCalendarUrl({
   location,
   datetime,
   description = "",
-  durationHours = 3,
+  durationMinutes = 180,
 }: IcsEventParams): string {
   const startDate = new Date(datetime);
-  const endDate = new Date(startDate.getTime() + durationHours * 60 * 60 * 1000);
+  const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
 
   const format = (d: Date) =>
     d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
@@ -97,10 +97,10 @@ export function generateOutlookWebUrl({
   location,
   datetime,
   description = "",
-  durationHours = 3,
+  durationMinutes = 180,
 }: IcsEventParams): string {
   const startDate = new Date(datetime);
-  const endDate = new Date(startDate.getTime() + durationHours * 60 * 60 * 1000);
+  const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
 
   const params = new URLSearchParams({
     subject: title,

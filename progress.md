@@ -133,7 +133,7 @@ Migration files in `drizzle/` directory. Run `npx drizzle-kit migrate` to apply.
 
 ### Phase 1: RSVP Enhancements ✅
 - **Random RSVP messages**: 10+ fun messages randomly displayed on Yes/No response (bounce + fade-in animations)
-- **Add to Calendar**: Dropdown with Google Calendar, Apple Calendar, Outlook (.ics), and Outlook.com options. Shows only after accepting RSVP.
+- **Add to Calendar**: Dropdown with Google Calendar, Apple Calendar, Outlook (.ics), and Outlook.com options. Shows only after accepting RSVP. All calendar options are pre-populated with the party title, date/time, location, and personal message from the invitation — recipients don't need to fill anything in manually.
 - **Calendar helpers**: `generateIcsFile()`, `generateGoogleCalendarUrl()`, `generateOutlookWebUrl()` in `utils.ts`
 
 ### Phase 2: Floating Animations & Sound ✅

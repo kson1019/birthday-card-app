@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { put } from "@vercel/blob";
+import crypto from "crypto";
 
 const ALLOWED_TYPES = [
   "image/jpeg",
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     }
 
     const ext = file.name.split(".").pop() || "jpg";
-    const filename = `uploads/${crypto.randomUUID()}.${ext}`;
+    const filename = `cards/${crypto.randomUUID()}.${ext}`;
 
     const blob = await put(filename, file, {
       access: "public",

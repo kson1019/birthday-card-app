@@ -13,6 +13,7 @@ interface RsvpFormProps {
   eventLocation?: string;
   eventDatetime?: string;
   eventDescription?: string;
+  eventDurationMinutes?: number;
   enableSound?: boolean;
 }
 
@@ -23,6 +24,7 @@ export default function RsvpForm({
   eventLocation,
   eventDatetime,
   eventDescription,
+  eventDurationMinutes,
   enableSound = true,
 }: RsvpFormProps) {
   const [status, setStatus] = useState<"accepted" | "declined" | null>(
@@ -92,6 +94,7 @@ export default function RsvpForm({
               location={eventLocation!}
               datetime={eventDatetime!}
               description={eventDescription}
+              durationMinutes={eventDurationMinutes}
             />
           </div>
         )}

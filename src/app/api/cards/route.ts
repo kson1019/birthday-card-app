@@ -30,43 +30,40 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = db.transaction((tx) => {
-      const cardRows = tx
-        .insert(cards)
-        .values({
-          imagePath: body.imagePath,
-          headline: body.headline,
-          title: body.title,
-          hostedBy: body.hostedBy?.trim() || null,
-          location: body.location,
-          datetime: body.datetime,
-          message: body.message,
-          theme: body.theme ?? "default",
-          enableEmojis: body.enableEmojis !== false ? 1 : 0,
-          enableSound: body.enableSound !== false ? 1 : 0,
-        })
-        .returning()
-        .all();
+    const cardRows = db
+      .insert(cards)
+      .values({
+        imagePath: body.imagePath,
+        headline: body.headline,
+        title: body.title,
+        hostedBy: body.hostedBy?.trim() || null,
+        location: body.location,
+        datetime: body.datetime,
+        message: body.message,
+        theme: body.theme ?? "default",
+        durationMinutes: body.durationMinutes ?? 180,
+        enableEmojis: body.enableEmojis !== false ? 1 : 0,
+        enableSound: body.enableSound !== false ? 1 : 0,
+      })
+      .returning()
+      .all();
 
-      const card = cardRows[0];
+    const card = cardRows[0];
 
-      const recipientRows = body.recipients.map((r) => ({
-        cardId: card.id,
-        email: r.email,
-        name: r.name || null,
-        token: generateToken(),
-      }));
+    const recipientRows = body.recipients.map((r) => ({
+      cardId: card.id,
+      email: r.email,
+      name: r.name || null,
+      token: generateToken(),
+    }));
 
-      const insertedRecipients = tx
-        .insert(recipients)
-        .values(recipientRows)
-        .returning()
-        .all();
+    const insertedRecipients = db
+      .insert(recipients)
+      .values(recipientRows)
+      .returning()
+      .all();
 
-      return { ...card, recipients: insertedRecipients };
-    });
-
-    return NextResponse.json(result, { status: 201 });
+    return NextResponse.json({ ...card, recipients: insertedRecipients }, { status: 201 });
   } catch (error) {
     console.error("Create card error:", error);
     return NextResponse.json(

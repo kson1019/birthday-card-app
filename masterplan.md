@@ -252,7 +252,7 @@ src/
 3. Clicks card to flip and reveal party details
 4. Submits RSVP (Yes/No + optional message) with pop sound on button click
 5. Sees random fun confirmation message with bounce animation
-6. If accepted: Calendar dropdown appears (Google, Apple, Outlook, Outlook.com)
+6. If accepted: Calendar dropdown appears (Google, Apple, Outlook, Outlook.com) — event is pre-populated with party title, date/time, location, and message from the invitation
 7. Status stored in `recipients` table
 8. Dashboard updates in real-time
 
@@ -280,7 +280,7 @@ src/
 
 ### Phase 1: RSVP Enhancements ✅
 - [x] Random fun message on RSVP confirmation
-- [x] Add to Calendar dropdown (Google, Apple, Outlook, Outlook.com)
+- [x] Add to Calendar dropdown (Google, Apple, Outlook, Outlook.com) with pre-populated title, date/time, location, and message from the invitation
 
 ### Phase 2: Floating Animations & Sound ✅
 - [x] Floating emoji elements (mix of all themes)

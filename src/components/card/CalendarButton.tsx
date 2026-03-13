@@ -13,6 +13,7 @@ interface CalendarButtonProps {
   location: string;
   datetime: string;
   description?: string;
+  durationMinutes?: number;
 }
 
 interface CalendarOption {
@@ -26,6 +27,7 @@ export default function CalendarButton({
   location,
   datetime,
   description = "",
+  durationMinutes = 180,
 }: CalendarButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -41,7 +43,7 @@ export default function CalendarButton({
   }, []);
 
   const downloadIcs = () => {
-    const icsContent = generateIcsFile({ title, location, datetime, description });
+    const icsContent = generateIcsFile({ title, location, datetime, description, durationMinutes });
     const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -60,7 +62,7 @@ export default function CalendarButton({
       icon: "🗓️",
       action: () => {
         window.open(
-          generateGoogleCalendarUrl({ title, location, datetime, description }),
+          generateGoogleCalendarUrl({ title, location, datetime, description, durationMinutes }),
           "_blank"
         );
         setIsOpen(false);
@@ -81,7 +83,7 @@ export default function CalendarButton({
       icon: "🌐",
       action: () => {
         window.open(
-          generateOutlookWebUrl({ title, location, datetime, description }),
+          generateOutlookWebUrl({ title, location, datetime, description, durationMinutes }),
           "_blank"
         );
         setIsOpen(false);
