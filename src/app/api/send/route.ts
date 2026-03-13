@@ -35,9 +35,12 @@ export async function POST(request: Request) {
     const resolveImageUrl = (p: string) =>
       p.startsWith("http://") || p.startsWith("https://") ? p : `${baseUrl}${p}`;
 
-    const results = await Promise.allSettled(
-      cardRecipients.map((recipient: typeof recipients.$inferSelect) =>
-        resend.emails.send({
+    // Send emails sequentially with delay to respect Resend's 2/second rate limit
+    const results: Array<{ success: boolean; error?: string }> = [];
+    
+    for (const recipient of cardRecipients) {
+      try {
+        await resend.emails.send({
           from: "Birthday Cards <invitations@familylaunchpad.com>",
           replyTo: "kson1019@gmail.com",
           to: recipient.email,
@@ -53,15 +56,23 @@ export async function POST(request: Request) {
             cardUrl: `${baseUrl}/card/${card.id}?token=${recipient.token}`,
             recipientName: recipient.name ?? undefined,
           }),
-        })
-      )
-    );
+        });
+        results.push({ success: true });
+        
+        // Wait 600ms between emails (allows 2 emails per second with buffer)
+        if (cardRecipients.indexOf(recipient) < cardRecipients.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 600));
+        }
+      } catch (error: any) {
+        results.push({ success: false, error: error?.message || "Unknown error" });
+      }
+    }
 
-    const sent = results.filter((r) => r.status === "fulfilled").length;
-    const failed = results.filter((r) => r.status === "rejected").length;
+    const sent = results.filter((r) => r.success).length;
+    const failed = results.filter((r) => !r.success).length;
     const errors = results
-      .filter((r): r is PromiseRejectedResult => r.status === "rejected")
-      .map((r) => r.reason?.message || "Unknown error");
+      .filter((r) => !r.success)
+      .map((r) => r.error || "Unknown error");
 
     return NextResponse.json({ sent, failed, errors });
   } catch (error) {
