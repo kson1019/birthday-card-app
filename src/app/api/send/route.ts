@@ -39,6 +39,7 @@ export async function POST(request: Request) {
       cardRecipients.map((recipient: typeof recipients.$inferSelect) =>
         resend.emails.send({
           from: "Birthday Cards <invitations@familylaunchpad.com>",
+          replyTo: "kson1019@gmail.com",
           to: recipient.email,
           subject: `You're Invited! ${card.title}`,
           react: InvitationEmail({
