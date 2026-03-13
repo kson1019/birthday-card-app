@@ -77,7 +77,7 @@ export async function GET() {
   try {
     const allCards = db.select().from(cards).orderBy(desc(cards.createdAt)).all();
 
-    const cardsWithCounts = allCards.map((card) => {
+    const cardsWithCounts = allCards.map((card: typeof cards.$inferSelect) => {
       const counts = db
         .select({
           total: sql<number>`count(*)`,

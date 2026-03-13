@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       p.startsWith("http://") || p.startsWith("https://") ? p : `${baseUrl}${p}`;
 
     const results = await Promise.allSettled(
-      cardRecipients.map((recipient) =>
+      cardRecipients.map((recipient: typeof recipients.$inferSelect) =>
         resend.emails.send({
           from: "Birthday Cards <invitations@familylaunchpad.com>",
           to: recipient.email,

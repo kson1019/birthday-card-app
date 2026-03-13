@@ -37,7 +37,7 @@ export async function GET(
 
     if (token) {
       currentRecipient =
-        cardRecipients.find((r) => r.token === token) || null;
+        cardRecipients.find((r: { token: string }) => r.token === token) || null;
     }
 
     return NextResponse.json({
