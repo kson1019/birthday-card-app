@@ -13,7 +13,7 @@ An all-in-one digital birthday invitation platform designed for kids' birthday p
 - **All-in-one experience**: Create, send, and track invitations in a single flow
 - **No account required**: Token-based system eliminates signup friction
 - **Delightful interactions**: 3D flip animations, confetti, floating emojis, sound effects, and playful design
-- **Real-time RSVP tracking**: Dashboard shows who's coming at a glance
+- **Real-time RSVP tracking**: Dashboard shows who's coming by name at a glance
 - **Customizable effects**: Per-card toggles for floating emojis and sound effects
 
 ---
@@ -97,7 +97,7 @@ src/
 │   ├── forms/
 │   │   ├── CardCreatorForm.tsx         # Full card creation form + toggles
 │   │   ├── ImageUploader.tsx           # Drag-and-drop upload
-│   │   ├── RecipientInput.tsx          # Tag-style multi-email input
+│   │   ├── RecipientInput.tsx          # Name + email input form with Add button
 │   │   └── RsvpForm.tsx                # Yes/No RSVP form
 │   └── dashboard/
 │       ├── CardList.tsx                # Grid of cards
@@ -241,7 +241,7 @@ src/
 1. User uploads image via drag-and-drop (`ImageUploader`)
 2. Fills in party details (headline, title, location, datetime, message)
 3. Toggles card effects (floating emojis, sound effects) — both on by default
-4. Adds recipient emails with tag-style input (`RecipientInput`)
+4. Adds recipient names and emails with form-based input (`RecipientInput`)
 5. Previews card with live flip animation
 6. Submits form → API creates card + recipients with unique tokens
 7. Emails sent to all recipients via Resend

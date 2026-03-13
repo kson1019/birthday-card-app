@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
 interface RecipientInputProps {
   value: { email: string; name?: string }[];
@@ -13,39 +13,39 @@ export default function RecipientInput({
   value,
   onChange,
 }: RecipientInputProps) {
-  const [inputValue, setInputValue] = useState("");
+  const [nameInput, setNameInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
   const [error, setError] = useState("");
 
-  const addEmail = useCallback(
-    (raw: string) => {
-      const email = raw.trim().toLowerCase();
-      if (!email) return;
+  const handleAdd = () => {
+    const email = emailInput.trim().toLowerCase();
+    const name = nameInput.trim();
 
-      if (!EMAIL_REGEX.test(email)) {
-        setError("Please enter a valid email address");
-        return;
-      }
-
-      if (value.some((r) => r.email === email)) {
-        setError("This email is already added");
-        return;
-      }
-
-      setError("");
-      onChange([...value, { email }]);
-      setInputValue("");
-    },
-    [value, onChange]
-  );
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      addEmail(inputValue);
+    if (!email) {
+      setError("Email is required");
+      return;
     }
 
-    if (e.key === "Backspace" && !inputValue && value.length > 0) {
-      onChange(value.slice(0, -1));
+    if (!EMAIL_REGEX.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (value.some((r) => r.email === email)) {
+      setError("This email is already added");
+      return;
+    }
+
+    setError("");
+    onChange([...value, { email, name: name || undefined }]);
+    setNameInput("");
+    setEmailInput("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAdd();
     }
   };
 
@@ -56,48 +56,76 @@ export default function RecipientInput({
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        Recipient Emails
+        Recipients
       </label>
 
-      <div className="border-2 border-gray-200 rounded-xl p-3 focus-within:border-purple-400 transition-colors">
-        <div className="flex flex-wrap gap-2 mb-2">
+      {value.length > 0 && (
+        <div className="mb-3 space-y-2">
           {value.map((recipient, index) => (
-            <span
+            <div
               key={index}
-              className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm"
+              className="flex items-center justify-between bg-purple-50 border border-purple-200 rounded-xl px-4 py-2.5"
             >
-              {recipient.email}
+              <div className="flex-1">
+                {recipient.name && (
+                  <p className="text-sm font-semibold text-gray-800">
+                    {recipient.name}
+                  </p>
+                )}
+                <p className="text-sm text-gray-600">{recipient.email}</p>
+              </div>
               <button
                 type="button"
                 onClick={() => removeRecipient(index)}
-                className="hover:text-purple-900 ml-1 text-lg leading-none"
+                className="text-purple-600 hover:text-purple-800 text-xl leading-none ml-3"
               >
                 &times;
               </button>
-            </span>
+            </div>
           ))}
         </div>
+      )}
 
-        <input
-          type="email"
-          value={inputValue}
-          onChange={(e) => {
-            setInputValue(e.target.value);
-            setError("");
-          }}
-          onKeyDown={handleKeyDown}
-          onBlur={() => {
-            if (inputValue.trim()) addEmail(inputValue);
-          }}
-          placeholder={
-            value.length === 0 ? "Enter email addresses..." : "Add another..."
-          }
-          className="w-full outline-none text-sm text-gray-700 placeholder-gray-400"
-        />
+      <div className="border-2 border-gray-200 rounded-xl p-4 space-y-3">
+        <div>
+          <input
+            type="text"
+            value={nameInput}
+            onChange={(e) => {
+              setNameInput(e.target.value);
+              setError("");
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder="Recipient's name (optional)"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:border-purple-400 focus:outline-none transition-colors"
+          />
+        </div>
+
+        <div className="flex gap-2">
+          <input
+            type="email"
+            value={emailInput}
+            onChange={(e) => {
+              setEmailInput(e.target.value);
+              setError("");
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder="Recipient's email (required)"
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:border-purple-400 focus:outline-none transition-colors"
+          />
+          <button
+            type="button"
+            onClick={handleAdd}
+            className="px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-full hover:bg-purple-700 transition-colors disabled:opacity-50"
+            disabled={!emailInput.trim()}
+          >
+            Add
+          </button>
+        </div>
       </div>
 
       <p className="text-xs text-gray-400 mt-1">
-        Press Enter or comma to add each email
+        Add at least one recipient to send invitations
       </p>
 
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}

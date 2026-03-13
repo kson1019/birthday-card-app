@@ -25,11 +25,9 @@ export default function RecipientList({ recipients }: RecipientListProps) {
             <div className="flex items-center justify-between">
               <div className="min-w-0">
                 <p className="text-sm font-medium text-gray-800 truncate">
-                  {r.email}
+                  {r.name || r.email}
                 </p>
-                {r.name && (
-                  <p className="text-xs text-gray-400">{r.name}</p>
-                )}
+                <p className="text-xs text-gray-400">{r.email}</p>
               </div>
               <span
                 className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${config.bg} ${config.text}`}

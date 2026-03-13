@@ -62,7 +62,7 @@ src/
 │   ├── forms/
 │   │   ├── CardCreatorForm.tsx     # Full creation form with preview toggle
 │   │   ├── ImageUploader.tsx       # Drag-and-drop upload
-│   │   ├── RecipientInput.tsx      # Tag-style multi-email input
+│   │   ├── RecipientInput.tsx      # Name + email input form with Add button
 │   │   └── RsvpForm.tsx            # Yes/No RSVP form (client)
 │   └── dashboard/
 │       ├── CardList.tsx            # Grid of cards
