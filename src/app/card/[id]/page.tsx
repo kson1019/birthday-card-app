@@ -77,7 +77,7 @@ export default async function CardPage({ params, searchParams }: PageProps) {
                 href={mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-base text-purple-700 underline decoration-purple-300 underline-offset-2 hover:decoration-purple-600"
+                className="text-base text-gray-800 underline decoration-gray-400 underline-offset-2 hover:decoration-gray-600"
               >
                 {card.location}
               </a>
