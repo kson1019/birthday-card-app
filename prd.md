@@ -247,3 +247,33 @@ npm install
 npx drizzle-kit migrate    # First time only
 npm run dev                # → http://localhost:3000
 ```
+
+---
+
+## Recent Updates (March 2026)
+
+**UI/UX Improvements:**
+- Custom fonts: Baloo 2 (headings) + Nunito (body) for kid-friendly aesthetic
+- All buttons now pill-shaped (`rounded-full`)
+- Floating emojis: 50% smaller on mobile, fade out after 5 seconds, proper z-index layering
+- Mobile card spacing increased (24px horizontal padding)
+- Location links styled in gray (no purple)
+- Email greeting centered
+
+**Recipient Management:**
+- Added name field to recipient input (name + email form with Add button)
+- Dashboard shows recipients by name (primary) with email as secondary
+- Email greetings use recipient name when available
+
+**Infrastructure:**
+- Migrated image storage from local filesystem to Vercel Blob (public URLs for emails)
+- Fixed Resend rate limit: sequential email sending with 600ms delays (2 emails/second compliance)
+- Dual-database support: Turso (cloud) in production, SQLite (local) in development
+- Added `durationMinutes` field for accurate calendar event end times
+- All DB calls migrated to async/await for libSQL compatibility
+
+**Bug Fixes:**
+- Fixed "Too many requests" error when sending to 10+ recipients
+- Fixed broken images in Gmail (localhost URLs → public Vercel Blob URLs)
+- Fixed TypeScript build errors blocking Vercel deployments
+- Fixed floating emojis not visible on mobile devices

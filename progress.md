@@ -235,8 +235,53 @@ App runs at `http://localhost:3000`.
 
 ## Known Limitations / Future Improvements
 
-- **Image storage**: Images are stored in `public/uploads/` — works locally and on self-hosted servers. For Vercel deployment, switch to an object storage service (S3, Cloudflare R2, Vercel Blob).
+- **Image storage**: Now using Vercel Blob for cloud storage with public URLs. Legacy local uploads still supported.
 - **No auth**: Anyone with a card URL can view it. Acceptable for birthday invites but not sensitive events.
 - **Email re-sends**: Currently no tracking of whether emails were already sent — clicking "Create & Send" always sends fresh emails to all recipients.
 - **No card editing**: Cards are immutable after creation.
 - **No auto-play sound**: Browser autoplay policies prevent sound on page load. Sounds only play on user interactions (button clicks, card flips).
+
+---
+
+## Recent Updates (March 2026)
+
+### Typography & Design
+- **Fonts**: Switched to Baloo 2 (headings) + Nunito (body) via Google Fonts for a playful, kid-friendly look
+- **Buttons**: All buttons now use `rounded-full` for pill-shaped design
+- **Colors**: Location links changed from purple to gray while maintaining functionality
+
+### Floating Emojis
+- Reduced size by 50% on mobile (prevents text obstruction)
+- Auto-fade after 5 seconds (smooth exit)
+- Fixed z-index so emojis float above cards on mobile
+- Mobile card padding increased to 24px for better spacing
+
+### Recipient Management
+- Added **name field** to recipient input (name is now primary, email secondary)
+- Dashboard displays recipients by name instead of email
+- Email templates use recipient names in greetings when available
+- Form redesigned: Name input (optional) + Email input (required) + Add button
+
+### Email Infrastructure Overhaul
+- **Image hosting**: Migrated from local filesystem to Vercel Blob
+  - Images get permanent public HTTPS URLs
+  - Fixes broken images in Gmail and other email clients
+  - Automatic fallback for legacy local uploads
+- **Rate limit fix**: Sequential email sending with 600ms delays
+  - Respects Resend's 2 emails/second limit
+  - Prevents "Too many requests" errors for 10+ recipients
+  - 19 emails now take ~12 seconds instead of failing
+
+### Database & Infrastructure
+- **Dual-database support**:
+  - Production: Turso (cloud libSQL) when env vars present
+  - Development: local SQLite via `better-sqlite3`
+  - Smart connection switching in `src/lib/db/index.ts`
+- **Async migration**: All DB calls now use `await` for libSQL compatibility
+- **Calendar duration**: Added `durationMinutes` field for accurate event end times (hours + minutes input)
+
+### Bug Fixes
+- Fixed TypeScript build errors blocking Vercel deployments (implicit `any` types)
+- Fixed floating emojis not appearing on mobile (z-index issue)
+- Fixed email rate limit failures when sending to multiple recipients
+- Fixed localhost image URLs breaking in email clients

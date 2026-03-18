@@ -403,8 +403,50 @@ App runs at `http://localhost:3000`
 | Limitation | Impact | Future Solution |
 |------------|--------|-----------------|
 | No auth | Anyone with URL can view | Add optional PIN or password |
-| Local image storage | Won't work on Vercel | Cloud storage migration |
-| No email tracking | Can't prevent re-sends | Track send status per recipient |
 | Immutable cards | No editing after creation | Add edit endpoint with versioning |
 | Single language | English only | i18n support |
 | No auto-play sound | Browser policy blocks page-load audio | Sounds play on user interactions only |
+
+---
+
+## Recent Updates (March 2026)
+
+### UI & Design Improvements
+- **Custom fonts**: Switched from Geist to Baloo 2 (headings) + Nunito (body) for a friendlier, kid-friendly aesthetic
+- **Rounded buttons**: All buttons now use `rounded-full` for a pill-shaped, playful design
+- **Floating emoji optimizations**:
+  - Reduced emoji size by 50% on mobile devices to prevent text obstruction
+  - Emojis now fade out completely after 5 seconds
+  - Fixed z-index layering so emojis appear above cards on mobile
+- **Mobile spacing**: Increased horizontal padding from 16px to 24px on card pages for better readability
+- **Location link styling**: Changed from purple to default gray while maintaining underline and click functionality
+
+### Recipient Management
+- **Name field added**: Recipients now have both name and email fields
+  - Name displays as primary identifier in dashboard
+  - Email greeting in invitations now uses recipient name when available
+  - Dashboard tracking shows "Who's coming" by name instead of email
+
+### Email Infrastructure
+- **Cloud image hosting**: Migrated from local filesystem to Vercel Blob
+  - Images now have permanent public URLs that work in emails
+  - Fixes broken image links in Gmail and other email clients
+  - Automatic fallback for legacy local uploads
+- **Rate limit handling**: Fixed Resend 2 emails/second rate limit
+  - Emails now send sequentially with 600ms delays between each
+  - Prevents "Too many requests" errors when sending to 10+ recipients
+  - Sending 19 emails takes ~12 seconds instead of failing instantly
+
+### Database & Infrastructure
+- **Dual-database support**: Smart connection switching
+  - Uses Turso (cloud libSQL) in production when env vars present
+  - Falls back to local SQLite (`better-sqlite3`) in development
+  - All DB calls migrated to async/await pattern for Turso compatibility
+- **Calendar pre-population**: Added `durationMinutes` field
+  - Card creators can specify party duration (hours + minutes)
+  - Google Calendar, Apple Calendar, and Outlook events auto-populate with correct end time
+
+### Developer Experience
+- **Documentation updates**: Comprehensive updates to `masterplan.md`, `prd.md`, `progress.md`
+- **Type safety improvements**: Fixed implicit `any` types in API routes
+- **Production deployment**: Fixed build errors blocking Vercel deployments
