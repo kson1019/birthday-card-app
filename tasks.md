@@ -338,11 +338,69 @@ Phases 3, 4, and 5 are deferred after the initial release to ship the MVP sooner
 |-------|-------|--------|
 | 1     | 5     | ✅ Complete |
 | 2     | 9     | ✅ Complete |
-| 3     | 10    | ✅ Complete |
+| 3     | 10    | Post-MVP (Deferred) |
 | 4     | 12    | Post-MVP |
 | 5     | 12    | Post-MVP |
 | **MVP Total** | **24** | **Complete — ready to ship** |
 | **Post-MVP** | **24** | Deferred |
+
+---
+
+## Recent Improvements (March 2026)
+
+Beyond the original MVP phases, the following enhancements were implemented:
+
+### Typography & Visual Design
+- [x] **Custom Fonts**: Migrated from Geist to Baloo 2 (headings) + Nunito (body) via Google Fonts
+- [x] **Rounded Buttons**: Updated all buttons to use `rounded-full` for pill-shaped, playful design
+- [x] **Location Link Styling**: Changed location text from purple to gray while maintaining underline and link functionality
+
+### Recipient Management
+- [x] **Name Field Added**: Recipients now have both name and email fields
+  - Updated `RecipientInput.tsx` to use form-based input (name + email + Add button)
+  - Dashboard displays recipient names as primary identifier with email as secondary
+  - Email greetings use recipient name when available ("Hi [Name],")
+  - Updated database schema and types to support name field
+
+### Floating Emoji Optimizations
+- [x] **Mobile Size Reduction**: Floating emojis are 50% smaller on mobile devices (≤640px)
+- [x] **Auto Fade-Out**: Emojis fade out completely after 5 seconds (80% visible, then 1.25s fade)
+- [x] **Z-Index Fix**: Raised floating elements to `z-[15]` so they appear above cards on mobile
+- [x] **Mobile Spacing**: Increased horizontal padding from `px-4` (16px) to `px-6` (24px) on card pages
+
+### Image & Email Infrastructure
+- [x] **Vercel Blob Migration**: Switched from local filesystem to Vercel Blob for image storage
+  - Images get permanent public HTTPS URLs (works in emails)
+  - Updated `/api/upload` route to use `@vercel/blob` SDK
+  - Added smart URL resolution in `/api/send` (supports both Blob and legacy local paths)
+  - Fixes broken image links in Gmail and other email clients
+- [x] **Email Rate Limit Handling**: Fixed Resend's 2 emails/second rate limit
+  - Changed from `Promise.allSettled()` to sequential loop
+  - Added 600ms delays between each email send
+  - Prevents "Too many requests" errors when sending to 10+ recipients
+  - 19 emails now send successfully in ~12 seconds instead of failing instantly
+
+### Database & Backend
+- [x] **Dual-Database Support**: Smart connection switching between Turso (production) and SQLite (local)
+  - Updated `src/lib/db/index.ts` to detect Turso env vars and switch drivers
+  - All DB queries migrated to async/await pattern for libSQL compatibility
+  - Local development still uses `better-sqlite3` when Turso vars not present
+- [x] **Party Duration Field**: Added hours + minutes input for calendar event duration
+  - Added `durationMinutes` column to cards schema (default 180 = 3 hours)
+  - Updated card creator form with separate hour/min inputs
+  - Calendar helpers now use `durationMinutes` for accurate event end times
+  - Google Calendar, Apple Calendar, and Outlook pre-populate with correct duration
+
+### Bug Fixes
+- [x] Fixed TypeScript build errors blocking Vercel deployments (implicit `any` types in API routes)
+- [x] Fixed floating emojis not visible on mobile (z-index layering issue)
+- [x] Fixed email greeting alignment (now center-aligned to match invitation text)
+- [x] Fixed email images using localhost URLs (migrated to public Vercel Blob URLs)
+
+### Documentation Updates
+- [x] Updated `masterplan.md`, `prd.md`, `progress.md` with comprehensive "Recent Updates" sections
+- [x] Updated `CLAUDE.md` with current tech stack, async query patterns, and architecture changes
+- [x] Updated `tasks.md` (this file) with all post-MVP improvements
 
 ---
 
