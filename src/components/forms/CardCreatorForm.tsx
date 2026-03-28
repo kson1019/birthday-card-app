@@ -2,21 +2,19 @@
 
 import { useState } from "react";
 import ImageUploader from "./ImageUploader";
+import ThemeSelector from "./ThemeSelector";
 import RecipientInput from "./RecipientInput";
 import FlipCard from "../card/FlipCard";
 
 export default function CardCreatorForm() {
   const [imagePath, setImagePath] = useState("");
+  const [theme, setTheme] = useState("default");
   const [headline, setHeadline] = useState("");
   const [title, setTitle] = useState("");
   const [hostedBy, setHostedBy] = useState("");
   const [location, setLocation] = useState("");
   const [datetime, setDatetime] = useState("");
   const [message, setMessage] = useState("");
-  const [durationHours, setDurationHours] = useState(2);
-  const [durationMins, setDurationMins] = useState(0);
-  const [enableEmojis, setEnableEmojis] = useState(true);
-  const [enableSound, setEnableSound] = useState(true);
   const [recipients, setRecipients] = useState<
     { email: string; name?: string }[]
   >([]);
@@ -55,9 +53,6 @@ export default function CardCreatorForm() {
           location,
           datetime,
           message,
-          durationMinutes: durationHours * 60 + durationMins,
-          enableEmojis,
-          enableSound,
           recipients,
         }),
       });
@@ -99,10 +94,6 @@ export default function CardCreatorForm() {
       setLocation("");
       setDatetime("");
       setMessage("");
-      setDurationHours(2);
-      setDurationMins(0);
-      setEnableEmojis(true);
-      setEnableSound(true);
       setRecipients([]);
       setShowPreview(false);
     } catch {
@@ -117,6 +108,8 @@ export default function CardCreatorForm() {
       {/* Form */}
       <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-6">
         <ImageUploader value={imagePath} onChange={setImagePath} />
+
+        <ThemeSelector value={theme} onChange={setTheme} />
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -184,37 +177,6 @@ export default function CardCreatorForm() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Party Duration
-          </label>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 flex-1">
-              <input
-                type="number"
-                min={0}
-                max={23}
-                value={durationHours}
-                onChange={(e) => setDurationHours(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-700 focus:border-purple-400 focus:outline-none transition-colors text-center"
-              />
-              <span className="text-sm text-gray-500 whitespace-nowrap">hr</span>
-            </div>
-            <div className="flex items-center gap-2 flex-1">
-              <input
-                type="number"
-                min={0}
-                max={59}
-                step={15}
-                value={durationMins}
-                onChange={(e) => setDurationMins(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-700 focus:border-purple-400 focus:outline-none transition-colors text-center"
-              />
-              <span className="text-sm text-gray-500 whitespace-nowrap">min</span>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
             Message
           </label>
           <textarea
@@ -226,62 +188,6 @@ export default function CardCreatorForm() {
           />
         </div>
 
-        <div className="space-y-3">
-          <label className="block text-sm font-medium text-gray-700">
-            Card Effects
-          </label>
-
-          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-            <div className="flex items-center gap-3">
-              <span className="text-xl">🎈</span>
-              <div>
-                <p className="text-sm font-medium text-gray-700">Floating Emojis</p>
-                <p className="text-xs text-gray-400">Emojis float across the card</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={enableEmojis}
-              onClick={() => setEnableEmojis(!enableEmojis)}
-              className={`relative w-11 h-6 rounded-full transition-colors ${
-                enableEmojis ? "bg-purple-500" : "bg-gray-300"
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-                  enableEmojis ? "translate-x-5" : "translate-x-0"
-                }`}
-              />
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-            <div className="flex items-center gap-3">
-              <span className="text-xl">🔊</span>
-              <div>
-                <p className="text-sm font-medium text-gray-700">Sound Effects</p>
-                <p className="text-xs text-gray-400">Play sounds on interactions</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={enableSound}
-              onClick={() => setEnableSound(!enableSound)}
-              className={`relative w-11 h-6 rounded-full transition-colors ${
-                enableSound ? "bg-purple-500" : "bg-gray-300"
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-                  enableSound ? "translate-x-5" : "translate-x-0"
-                }`}
-              />
-            </button>
-          </div>
-        </div>
-
         <RecipientInput value={recipients} onChange={setRecipients} />
 
         {/* Action Buttons */}
@@ -290,7 +196,7 @@ export default function CardCreatorForm() {
             type="button"
             onClick={() => setShowPreview(!showPreview)}
             disabled={!imagePath || !headline}
-            className="flex-1 px-6 py-3 border-2 border-purple-500 text-purple-600 rounded-full font-semibold hover:bg-purple-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-1 px-6 py-3 border-2 border-purple-500 text-purple-600 rounded-xl font-semibold hover:bg-purple-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {showPreview ? "Hide Preview" : "Preview Card"}
           </button>
@@ -299,7 +205,7 @@ export default function CardCreatorForm() {
             type="button"
             onClick={handleSubmit}
             disabled={!isFormValid || isSubmitting}
-            className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-full font-semibold hover:bg-purple-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {isSubmitting ? "Sending..." : "Create & Send Invitations"}
           </button>

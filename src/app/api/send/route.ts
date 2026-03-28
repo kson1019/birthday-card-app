@@ -17,32 +17,24 @@ export async function POST(request: Request) {
       );
     }
 
-    const cardRows = await db.select().from(cards).where(eq(cards.id, cardId));
-    const card = cardRows[0];
+    const card = db.select().from(cards).where(eq(cards.id, cardId)).get();
 
     if (!card) {
       return NextResponse.json({ error: "Card not found" }, { status: 404 });
     }
 
-    const cardRecipients = await db
+    const cardRecipients = db
       .select()
       .from(recipients)
-      .where(eq(recipients.cardId, cardId));
+      .where(eq(recipients.cardId, cardId))
+      .all();
 
     const baseUrl = getBaseUrl(request);
 
-    // imagePath is a full URL when stored via Vercel Blob, or a relative path for legacy local uploads
-    const resolveImageUrl = (p: string) =>
-      p.startsWith("http://") || p.startsWith("https://") ? p : `${baseUrl}${p}`;
-
-    // Send emails sequentially with delay to respect Resend's 2/second rate limit
-    const results: Array<{ success: boolean; error?: string }> = [];
-    
-    for (const recipient of cardRecipients) {
-      try {
-        await resend.emails.send({
+    const results = await Promise.allSettled(
+      cardRecipients.map((recipient: typeof cardRecipients[number]) =>
+        resend.emails.send({
           from: "Birthday Cards <invitations@familylaunchpad.com>",
-          replyTo: "kson1019@gmail.com",
           to: recipient.email,
           subject: `You're Invited! ${card.title}`,
           react: InvitationEmail({
@@ -52,27 +44,19 @@ export async function POST(request: Request) {
             location: card.location,
             datetime: card.datetime,
             message: card.message,
-            imagePath: resolveImageUrl(card.imagePath),
+            imagePath: `${baseUrl}${card.imagePath}`,
             cardUrl: `${baseUrl}/card/${card.id}?token=${recipient.token}`,
             recipientName: recipient.name ?? undefined,
           }),
-        });
-        results.push({ success: true });
-        
-        // Wait 600ms between emails (allows 2 emails per second with buffer)
-        if (cardRecipients.indexOf(recipient) < cardRecipients.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 600));
-        }
-      } catch (error: any) {
-        results.push({ success: false, error: error?.message || "Unknown error" });
-      }
-    }
+        })
+      )
+    );
 
-    const sent = results.filter((r) => r.success).length;
-    const failed = results.filter((r) => !r.success).length;
+    const sent = results.filter((r) => r.status === "fulfilled").length;
+    const failed = results.filter((r) => r.status === "rejected").length;
     const errors = results
-      .filter((r) => !r.success)
-      .map((r) => r.error || "Unknown error");
+      .filter((r): r is PromiseRejectedResult => r.status === "rejected")
+      .map((r) => r.reason?.message || "Unknown error");
 
     return NextResponse.json({ sent, failed, errors });
   } catch (error) {
