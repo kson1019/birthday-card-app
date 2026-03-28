@@ -9,12 +9,20 @@ export default function Home() {
           <h1 className="text-xl font-bold text-purple-700">
             &#127874; Birthday Cards
           </h1>
-          <Link
-            href="/dashboard"
-            className="text-sm text-purple-600 hover:text-purple-800 font-medium"
-          >
-            Dashboard &rarr;
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/dibotrip"
+              className="text-sm text-emerald-600 hover:text-emerald-800 font-medium"
+            >
+              DiboTrip &rarr;
+            </Link>
+            <Link
+              href="/dashboard"
+              className="text-sm text-purple-600 hover:text-purple-800 font-medium"
+            >
+              Dashboard &rarr;
+            </Link>
+          </div>
         </div>
       </header>
 

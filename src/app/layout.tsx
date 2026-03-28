@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Baloo_2, Nunito } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const baloo2 = Baloo_2({
@@ -15,8 +16,8 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Birthday Card App",
-  description: "Create beautiful animated birthday cards and send invitations",
+  title: "Family Launchpad",
+  description: "Birthday cards, trip planning, and more — by Family Launchpad",
 };
 
 export default function RootLayout({
@@ -30,6 +31,7 @@ export default function RootLayout({
         className={`${baloo2.variable} ${nunito.variable} antialiased`}
       >
         {children}
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );
