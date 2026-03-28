@@ -15,7 +15,7 @@ export default function DashboardHeader({ tripCount }: { tripCount: number }) {
       </div>
       <Link
         href="/dibotrip/new"
-        className="flex items-center gap-1.5 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors duration-150 shadow-sm"
+        className="flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors duration-150 shadow-sm"
       >
         <svg
           className="w-4 h-4"
