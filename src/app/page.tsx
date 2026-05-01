@@ -27,6 +27,18 @@ const modules = [
     description:
       "Itineraries, bookings, and everything your family needs in one place",
   },
+  {
+    id: "goals",
+    title: "Weekly Goals",
+    subtitle: "AI-powered goal planning",
+    emoji: "🎯",
+    href: "/goals",
+    gradient: "linear-gradient(135deg, #EDE9FE 0%, #C4B5FD 40%, #A78BFA 100%)",
+    accentColor: "#7C3AED",
+    shadowColor: "rgba(124, 58, 237, 0.2)",
+    description:
+      "Set a goal, get Claude to break it into weekly tasks, and track your progress",
+  },
 ];
 
 interface Module {

@@ -1,6 +1,36 @@
 import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
 
+export const goals = sqliteTable("goals", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  description: text("description"),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+});
+
+export const goalTasks = sqliteTable(
+  "goal_tasks",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    goalId: integer("goal_id")
+      .notNull()
+      .references(() => goals.id, { onDelete: "cascade" }),
+    weekNumber: integer("week_number").notNull(),
+    weekTheme: text("week_theme").notNull(),
+    title: text("title").notNull(),
+    description: text("description"),
+    isCompleted: integer("is_completed").notNull().default(0),
+    completedAt: text("completed_at"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: text("created_at")
+      .notNull()
+      .default(sql`(datetime('now'))`),
+  },
+  (table) => [index("idx_goal_tasks_goal_id").on(table.goalId)]
+);
+
 export const cards = sqliteTable("cards", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   imagePath: text("image_path").notNull(),
